@@ -42,9 +42,13 @@ void MainWindow::on_pushButton_2_clicked()
 }
 void MainWindow::lab1(QPixmap pix){
     Sobal *lab1 = new Sobal(pix);
-    QVector<double> vector = lab1->getSobalX(lab1->getGrayVector());
+    int massVert[] ={1,0,-1};
+    int massGoris[] = {1,2,1};
+    QVector<double> vectorImg = lab1->getSobal(lab1->getGrayVector(pix),massVert,massGoris,3);
+    vectorImg = lab1->getSobal(vectorImg,massGoris,massVert,3);
 
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((new QPixmap())->fromImage(vector));
+    ui->graphicsView_2->scene()->addPixmap((new QPixmap())->fromImage(lab1->getImg(vectorImg)));
     ui->graphicsView_2->resize(pix.size());
+
 }
