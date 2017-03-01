@@ -21,8 +21,10 @@ private slots:
     void on_pushButton_2_clicked();
 
 private:
+    QPixmap myImg;
     Ui::MainWindow *ui;
     void lab1(QPixmap pix);
+    void gauss(QPixmap pix);
 
 };
 

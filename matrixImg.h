@@ -2,18 +2,24 @@
 #define SOBAL_H
 #include <QVector>
 #include <QImage>
+#include <vector>
 
-class Sobal
+using namespace std;
+
+class matrixImg
 {
 public:
-    Sobal(QPixmap pix);
-    QVector <double> getGrayVector(QPixmap pix) const;
-    QVector<double> getSobal(QVector<double> gray, int *massVert, int *massGoris, int size)const;
-    QImage getImg(QVector<double> gray) const;
-
+    matrixImg(QPixmap *pix);
+    void getMutlMatrix(double *massVert, double *massGoris, int *size);
+    QImage getImg() const;
+    void gauss();
+    void sobel();
 private:
     int width, height;
-    QVector<double> Sobal::getMass9x9(QVector<double> gray, int i, int j) const;
+    vector<double> vectorImg;
+    vector<double> getMass(int *i, int *j, int *size) const;
+    vector <double> convertToVector(QPixmap *pix) const;
+    vector <double> getGrayVector(QPixmap *pix) const;
 };
 
 #endif // SOBAL_H

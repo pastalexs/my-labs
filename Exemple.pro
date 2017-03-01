@@ -26,10 +26,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     gauspiramida.cpp \
-    sobal.cpp
+    matrixImg.cpp
 
 HEADERS  += mainwindow.h \
     gauspiramida.h \
-    sobal.h
+    matrixImg.h
 
 FORMS    += mainwindow.ui
