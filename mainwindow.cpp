@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_2->setScene(scene2);
     ui->graphicsView->resize(pix.size());
     this->lab1(pix);
-   //  this->gays(pix);
+     //this->gauss(pix);
     myImg=pix;
 }
 

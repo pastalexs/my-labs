@@ -22,6 +22,23 @@ vector<double> matrixImg::getGrayVector(QPixmap *pix) const {
 
     return gray;
 }
+
+void matrixImg::gradiet(vector<double> *x, vector<double> *y)
+{
+    vector <double> resultImg;
+    for(int i=0;i<width;i++)
+    {
+        for(int j=0;j<height;j++)
+        {
+            double Gx= x->at(i*height+j);
+            double Gy= y->at(i*height+j);
+            resultImg.push_back(sqrt(Gx*Gx+Gy*Gy));
+        }
+    }
+    vectorImg.clear();
+    vectorImg.reserve(resultImg.size()+vectorImg.size());
+    vectorImg.insert(vectorImg.end(), resultImg.begin(), resultImg.end());
+}
 vector <double> matrixImg::convertToVector(QPixmap *pix) const {
     vector <double> myVector;
     QImage image = pix->toImage();
@@ -50,7 +67,6 @@ QImage matrixImg::getImg() const{
                 QColor color;
                 double G=(vectorImg.at(j*height+i)-min)/range;
                 G*=255;
-                 //double G=imag->at(j*height+i);
                 if(G>255)
                 {
                     color.setRgb(255,255,255);
@@ -92,7 +108,7 @@ vector<double> matrixImg::getMass(int *i, int *j, int *size) const {
     return pixel;
 }
 
-void matrixImg::getMutlMatrix(double *massVert, double *massGoris, int *size) {
+vector<double> matrixImg::getMutlMatrix(double *massVert, double *massGoris, int *size) {
 
     vector <double> resultImg;
     for(int m=0;m<width;m++)
@@ -112,15 +128,10 @@ void matrixImg::getMutlMatrix(double *massVert, double *massGoris, int *size) {
             for(int i=0;i<*size;i++){
                 resultZnath+=massGoris[i]*result.at(i);
             }
-            if(resultZnath<0){
-                resultZnath*=-1;
-            }
              resultImg.push_back(resultZnath);
         }
     }
-    vectorImg.clear();
-    vectorImg.reserve(resultImg.size()+vectorImg.size());
-    vectorImg.insert(vectorImg.end(), resultImg.begin(), resultImg.end());
+    return resultImg;
 
 }
 void matrixImg::sobel() {
@@ -129,15 +140,16 @@ void matrixImg::sobel() {
 
     int size = sizeof(massVert)/sizeof(*massVert);
 
-    getMutlMatrix(massVert,massGoris,&size);
-    getMutlMatrix(massGoris,massVert,&size);
+    vector<double> x = getMutlMatrix(massVert,massGoris,&size);
+    vector<double> y = getMutlMatrix(massGoris,massVert,&size);
+    gradiet(&x,&y);
 }
 
 void matrixImg::gauss() {
     double mass[] = {0.028087,0.23431,0.475207,0.23431,0.028087};
     //double mass[] = {1,2,1};
     int size = sizeof(mass)/sizeof(*mass);
-    getMutlMatrix(mass,mass,&size);
-    getMutlMatrix(mass,mass,&size);
-
+    vector<double> x=getMutlMatrix(mass,mass,&size);
+    vector<double> y = getMutlMatrix(mass,mass,&size);
+    gradiet(&x,&y);
 }
