@@ -11,8 +11,9 @@ class matrixImg
 public:
     matrixImg(QPixmap *pix);
     QImage getImg() const;
-    void gauss();
+    void gauss(double sigma);
     void sobel();
+     void pyramid(int scale);
     void convolution(double *mass,int *sizeN,int *sizeM);
     vector<double> convolution(vector<double> *img,double *mass,int *sizeN, int *sizeM);
 private:

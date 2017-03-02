@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->resize(pix.size());
     //this->lab1(pix);
     this->gauss(pix);
+   //this->pyramid(pix);
     myImg=pix;
 }
 
@@ -49,7 +50,14 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::gauss(QPixmap pix){
     matrixImg *lab1 = new matrixImg(&pix);
-    lab1->gauss();
+    lab1->gauss(2);
+    ui->graphicsView_2->scene()->clear();
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage((lab1->getImg())));
+}
+
+void MainWindow::pyramid(QPixmap pix){
+    matrixImg *lab1 = new matrixImg(&pix);
+    lab1->pyramid(2);
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage((lab1->getImg())));
 }
