@@ -298,8 +298,7 @@ vector<double> matrixImg::getCoreGauss(double sigma) {
 
 void matrixImg::gauss() {
     //double mass[] = {0.028087,0.23431,0.475207,0.23431,0.028087};
-    //double mass[] = {1,2,1};
-    vector<double> result=getCoreGauss(2.1);
+    vector<double> result=getCoreGauss(2);
     double summa=0;
     double *massCore = new double[result.size()];
     for(int i=0;i<result.size();i++){
@@ -307,7 +306,7 @@ void matrixImg::gauss() {
         massCore[i]=result.at(i);
     }
     int size1=1;
-    int size3=5;
+    int size3=result.size();
     convolution(massCore,&size3,&size1);
     convolution(massCore,&size1,&size3);
 }
