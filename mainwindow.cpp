@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QFileDialog>
 #include "matrixImg.cpp"
-
+#include <math.h>
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -19,8 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
     ui->graphicsView_2->setScene(scene2);
     ui->graphicsView->resize(pix.size());
-    this->lab1(pix);
-     //this->gauss(pix);
+    //this->lab1(pix);
+    this->gauss(pix);
     myImg=pix;
 }
 
