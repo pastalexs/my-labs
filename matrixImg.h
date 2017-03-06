@@ -10,28 +10,36 @@ class matrixImg
 {
 public:
     matrixImg(QPixmap *pix);
+    matrixImg(vector<double> *vector, int width, int height);
+
     QImage getImg() const;
-    void gauss(double sigma);
-    void sobel();
-     void pyramid(int scale);
-    void convolution(double *mass,int *sizeN,int *sizeM);
-    vector<double> convolution(vector<double> *img,double *mass,int *sizeN, int *sizeM);
+    QImage getImg(vector<double> *vector, int width, int height) const;
+
+    matrixImg sobelOnCoordinate(double *arrayV, double *arrayG, int size);
+
+    void convolution(double *mass,int sizeN,int sizeM);
+    vector<double> convolution(vector<double> *img, double *mass, int sizeN, int sizeM);
+
+    QImage gradient(matrixImg *matrixX, matrixImg *imagY);
+
+    vector<double> getKernelGauss(double sigma);
+
+    vector<double> getVector();
+    int getWidth();
+    int getHeignt();
 private:
     int width, height;
     vector<double> vectorImg;
 
-    vector<double> getMass2(int *i, int *j, int *sizeM, int *sizeN) const;
-    vector<double> getMass2(vector<double> *img,int *i, int *j, int *sizeM, int *sizeN) const;
-    vector<double> convertToVector(QPixmap *pix) const;
+    double getElement(int i, int j, int sizeM, int sizeN, int column, int row) const;
+    double getElement(vector<double> *img, int i, int j, int sizeM, int sizeN, int column, int row) const;
+
+    vector<double> matrixImg::convertToVector(QImage *image) const;
     vector<double> getGrayVector(QPixmap *pix) const;
-    void gradiet(vector<double> *x, vector<double> *y);
 
-    vector<double> getCoreGauss(double sigma);
 
-   //это старые методы, но пусть будут
-    vector<double> getMass(int *i, int *j, int *size) const;
-    vector<double> getMutlMatrix(double *massVert, double *massGoris, int *size);
-    void getMutlMatrix2(double *massVert, double *massGoris, int *size);
+
+
     void summa(vector<double> *x, vector<double> *y);
 
 };
