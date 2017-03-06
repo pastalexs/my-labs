@@ -18,7 +18,7 @@ public:
     matrixImg sobelOnCoordinate(double *arrayV, double *arrayG, int size);
 
     void convolution(double *mass,int sizeN,int sizeM);
-    vector<double> convolution(vector<double> *img, double *mass, int sizeN, int sizeM);
+    matrixImg convolution(matrixImg *matrixImg, double *mass, int sizeN, int sizeM);
 
     QImage gradient(matrixImg *matrixX, matrixImg *imagY);
 
@@ -30,6 +30,8 @@ public:
 private:
     int width, height;
     vector<double> vectorImg;
+
+    vector<double> convolution(vector<double> *img, double *mass, int sizeN, int sizeM);
 
     double getElement(int i, int j, int sizeM, int sizeN, int column, int row) const;
     double getElement(vector<double> *img, int i, int j, int sizeM, int sizeN, int column, int row) const;

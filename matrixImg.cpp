@@ -230,13 +230,36 @@ void matrixImg::convolution(double *mass, int sizeN, int sizeM)//свертка
     }
     return resultImg;
 }
+
+matrixImg matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, int sizeM)//свертка
+{
+    vector<double> img = matrix->getVector();
+    vector <double> resultImg;
+    for(int m=0;m<matrix->getWidth();m++)
+    {
+        for(int k=0;k<matrix->getHeignt();k++)
+        {
+            double resultZnath=0;
+            int indexMass=0;
+            for(int i=0;i<sizeN;i++){
+                double summaString=0;
+                for(int j=0;j<sizeM;j++){
+                    summaString+=mass[indexMass++]*getElement(&img,m,k,sizeM,sizeN,j,i);
+                }
+                resultZnath+=summaString;
+            }
+            resultImg.push_back(resultZnath);
+        }
+    }
+    return *(new matrixImg(&resultImg,matrix->getWidth(),matrix->getHeignt()));
+}
 matrixImg matrixImg::sobelOnCoordinate(double *arrayV, double *arrayG, int size) {
     int one=1;
 
     vector<double> x = convolution(&vectorImg,arrayV,size,one);
     x = convolution(&x,arrayG,one,size);
-    matrixImg *ret=new matrixImg(&x,width,height);
-    return *ret;
+
+    return *(new matrixImg(&x,width,height));
 }
 vector<double> matrixImg::getKernelGauss(double sigma) {
     vector<double> result;
