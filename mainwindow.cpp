@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QFileDialog>
 #include "matrixImg.cpp"
-#include <math.h>
+#include "gauspiramida.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -52,19 +52,20 @@ void MainWindow::gauss(QPixmap pix){
     matrixImg *lab1 = new matrixImg(&pix);
     double sigma=4;
 
-    vector<double> result=lab1->getKernelGauss(sigma);
+    vector<double>* result=GausPiramida::getKernelGauss(sigma);
     double summa=0;
-    double *massCore = new double[result.size()];
-    for(int i=0;i<result.size();i++){
-        summa+=result.at(i);
-        massCore[i]=result.at(i);
+    double *massCore = new double[result->size()];
+    for(int i=0;i<result->size();i++){
+        summa+=result->at(i);
+        massCore[i]=result->at(i);
     }
     int size1=1;
-    int size3=result.size();
-    lab1->convolution(massCore,size3,size1);
-    lab1->convolution(massCore,size1,size3);
+    int size3=result->size();
+    //lab1->convolution(massCore,size3,size1);
+   //lab1->convolution(massCore,size1,size3);
+    matrixImg* gauss = lab1->sobelOnCoordinate(massCore,massCore,size3);
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage((lab1->getImg())));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(*(gauss->getImg())));
 }
 
 void MainWindow::pyramid(QPixmap pix){
@@ -82,10 +83,12 @@ void MainWindow::lab1(QPixmap pix){
 
     int size3=3;
 
-    matrixImg x = lab1->sobelOnCoordinate(massVert,massGoris,size3);
+    matrixImg* x = lab1->sobelOnCoordinate(massVert,massGoris,size3);
 
-    matrixImg y = lab1->sobelOnCoordinate(massGoris,massVert,size3);
+    matrixImg* y = lab1->sobelOnCoordinate(massGoris,massVert,size3);
 
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(lab1->gradient(&x,&y)));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(*lab1->gradient(x,y)));
 }
+
+

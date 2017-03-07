@@ -1,5 +1,6 @@
 #include "matrixImg.h"
-#include <math.h>
+
+
 
 matrixImg::matrixImg(QPixmap *pix)
 {
@@ -31,21 +32,21 @@ vector<double> matrixImg::getGrayVector(QPixmap *pix) const {
     return gray;
 }
 
-QImage matrixImg::gradient(matrixImg *matrixX, matrixImg *matrixImgY)
+QImage* matrixImg::gradient(matrixImg *matrixX, matrixImg *matrixImgY)
 {
-    vector<double> x = matrixX->getVector();
-    vector<double> y = matrixImgY->getVector();
+    vector<double>* x = matrixX->getVector();
+    vector<double>* y = matrixImgY->getVector();
     vector <double> resultImg;
-    for(int i=0;i<width;i++)
+    for(int i=0;i<matrixX->getWidth();i++)
     {
-        for(int j=0;j<height;j++)
+        for(int j=0;j<matrixX->getHeignt();j++)
         {
-            double Gx= x.at(i*height+j);
-            double Gy= y.at(i*height+j);
+            double Gx= x->at(i*matrixX->getHeignt()+j);
+            double Gy= y->at(i*matrixX->getHeignt()+j);
             resultImg.push_back(sqrt(Gx*Gx+Gy*Gy));
         }
     }
-   return getImg(&resultImg,width,height);
+   return getImg(&resultImg,matrixX->getWidth(),matrixX->getHeignt());
 }
 void matrixImg::summa(vector<double> *x, vector<double> *y)
 {
@@ -75,11 +76,11 @@ vector <double> matrixImg::convertToVector(QImage *image) const {
     return myVector;
 }
 
-QImage matrixImg::getImg() const{
+QImage *matrixImg::getImg() const{
     double min=*min_element(vectorImg.begin(),vectorImg.end()) ;
     double max=*max_element(vectorImg.begin(),vectorImg.end());
     double range=max - min;
-    QImage result(width,height,QImage::Format_RGB32);
+    QImage* result = new QImage(width,height,QImage::Format_RGB32);
     for(int j=0;j<width;j++)
     {
         for(int i=0;i<height;i++)
@@ -96,22 +97,22 @@ QImage matrixImg::getImg() const{
                 {
                     color.setRgb(G,G,G);
                 }
-                result.setPixel(j,i,color.rgb());
+                result->setPixel(j,i,color.rgb());
             }
             else {
                  QColor color(100,100,100);
-                result.setPixel(j,i, color.rgb());
+                result->setPixel(j,i, color.rgb());
             }
         }
     }
     return result;
 }
 
-QImage matrixImg::getImg(vector<double> *vector,int width,int height) const{
+QImage *matrixImg::getImg(vector<double> *vector,int width,int height){
     double min=*min_element(vector->begin(),vector->end()) ;
     double max=*max_element(vector->begin(),vector->end());
     double range=max - min;
-    QImage result(width,height,QImage::Format_RGB32);
+    QImage* result = new QImage(width,height,QImage::Format_RGB32);
     for(int j=0;j<width;j++)
     {
         for(int i=0;i<height;i++)
@@ -129,11 +130,11 @@ QImage matrixImg::getImg(vector<double> *vector,int width,int height) const{
                 {
                    color.setRgb(G,G,G);
                 }
-                result.setPixel(j,i,color.rgb());
+                result->setPixel(j,i,color.rgb());
             }
             else {
                  QColor color(100,100,100);
-                result.setPixel(j,i, color.rgb());
+                result->setPixel(j,i, color.rgb());
             }
         }
     }
@@ -141,6 +142,7 @@ QImage matrixImg::getImg(vector<double> *vector,int width,int height) const{
 }
 
 double matrixImg::getElement(int i, int j, int sizeM, int sizeN,int column,int row) const {
+  //  return getElement(&vectorImg, i, j, sizeM, sizeN, column, row);
     if(sizeM==1){
     column+=i-1;
     row+=j;
@@ -155,15 +157,16 @@ double matrixImg::getElement(int i, int j, int sizeM, int sizeN,int column,int r
         }
     }
 
-    if(row>=0&&row<height&&column>=0&&column<width){
+    if(row>=0&&row<(height-1)&&column>=0&&column<width){
         return vectorImg.at(column*height+row);
     }
     else {
         return 255;
     }
 }
-double matrixImg::getElement(vector<double> *img, int i, int j, int sizeM, int sizeN,int column,int row) const {
+double matrixImg::getElement(matrixImg *matrix, int i, int j, int sizeM, int sizeN, int column, int row) {
 
+    vector<double>* vector = matrix->getVector();
     if(sizeM==1){
     column+=i-1;
     row+=j;
@@ -178,8 +181,8 @@ double matrixImg::getElement(vector<double> *img, int i, int j, int sizeM, int s
         }
     }
 
-    if(row>=0&&row<height&&column>=0&&column<width){
-        return img->at(column*height+row);
+    if(row>=0&&row<matrix->getHeignt()&&column>=0&&column<matrix->getWidth()){
+        return vector->at(column*matrix->getHeignt()+row);
     }
     else {
         return 255;
@@ -188,7 +191,9 @@ double matrixImg::getElement(vector<double> *img, int i, int j, int sizeM, int s
 
 void matrixImg::convolution(double *mass, int sizeN, int sizeM)//свертка
 {
-    vector <double> resultImg;
+    matrixImg* result=convolution(new matrixImg(&vectorImg,width,height),mass,sizeN,sizeM);
+    vector<double>* resultImg = result->getVector();
+   /* vector <double> resultImg;
     for(int m=0;m<width;m++)
     {
         for(int k=0;k<height;k++)
@@ -198,42 +203,20 @@ void matrixImg::convolution(double *mass, int sizeN, int sizeM)//свертка
             for(int i=0;i<sizeN;i++){
                 double summaString=0;
                 for(int j=0;j<sizeM;j++){
-                    summaString+=mass[indexMass++]*getElement(m,k,sizeM,sizeN,j,i);//pixel.at(i*sizeM+j);
+                    summaString+=mass[indexMass++]*getElement(m,k,sizeM,sizeN,j,i);
                 }
                 resultZnath+=summaString;
             }
             resultImg.push_back(resultZnath);
         }
-    }
+    }*/
     vectorImg.clear();
-    vectorImg.reserve(resultImg.size()+vectorImg.size());
-    vectorImg.insert(vectorImg.end(), resultImg.begin(), resultImg.end());
-}
- vector<double> matrixImg::convolution(vector<double> *img, double *mass, int sizeN, int sizeM)//свертка
-{
-    vector <double> resultImg;
-    for(int m=0;m<width;m++)
-    {
-        for(int k=0;k<height;k++)
-        {
-            double resultZnath=0;
-            int indexMass=0;
-            for(int i=0;i<sizeN;i++){
-                double summaString=0;
-                for(int j=0;j<sizeM;j++){
-                    summaString+=mass[indexMass++]*getElement(img,m,k,sizeM,sizeN,j,i);
-                }
-                resultZnath+=summaString;
-            }
-            resultImg.push_back(resultZnath);
-        }
-    }
-    return resultImg;
+    vectorImg.reserve(resultImg->size()+vectorImg.size());
+    vectorImg.insert(vectorImg.end(), resultImg->begin(), resultImg->end());
 }
 
-matrixImg matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, int sizeM)//свертка
+matrixImg *matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, int sizeM)//свертка
 {
-    vector<double> img = matrix->getVector();
     vector <double> resultImg;
     for(int m=0;m<matrix->getWidth();m++)
     {
@@ -244,44 +227,28 @@ matrixImg matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, int
             for(int i=0;i<sizeN;i++){
                 double summaString=0;
                 for(int j=0;j<sizeM;j++){
-                    summaString+=mass[indexMass++]*getElement(&img,m,k,sizeM,sizeN,j,i);
+                    summaString+=mass[indexMass++]*getElement(matrix,m,k,sizeM,sizeN,j,i);
                 }
                 resultZnath+=summaString;
             }
             resultImg.push_back(resultZnath);
         }
     }
-    return *(new matrixImg(&resultImg,matrix->getWidth(),matrix->getHeignt()));
+    return new matrixImg(&resultImg,matrix->getWidth(),matrix->getHeignt());
 }
-matrixImg matrixImg::sobelOnCoordinate(double *arrayV, double *arrayG, int size) {
+matrixImg *matrixImg::sobelOnCoordinate(double *arrayV, double *arrayG, int size) {
     int one=1;
 
-    vector<double> x = convolution(&vectorImg,arrayV,size,one);
-    x = convolution(&x,arrayG,one,size);
+    matrixImg* x = convolution(new matrixImg(&vectorImg,width,height),arrayV,size,one);
+    x = convolution(x,arrayG,one,size);
 
-    return *(new matrixImg(&x,width,height));
-}
-vector<double> matrixImg::getKernelGauss(double sigma) {
-    vector<double> result;
-    double element=1/(sqrt(2*3.14159265358979323846)*sigma);
-    double element2=2*sigma*sigma;
-    int partLine = qRound(3 * sigma + 0.5);
-    int size = 2 * partLine + 1;
-    double sum=0;
-    for(int i=0;i<=size;i++){
-        result.push_back(element*exp(-pow(partLine-i,2)/element2));
-        sum+=result.at(i);
-    }
-    vector<double> resultImg;
-    for(int i=0;i<=size;i++){
-        resultImg.push_back(result.at(i)/sum);
-    }
-    return resultImg;
+    return x;
 }
 
-vector<double> matrixImg::getVector()
+
+vector<double>* matrixImg::getVector()
 {
-    return vectorImg;
+    return &vectorImg;
 }
 
 int matrixImg::getWidth()
