@@ -15,7 +15,7 @@ public:
     QImage* getImg() const;
     static QImage* getImg(vector<double> *vector, int width, int height);
 
-    matrixImg* sobelOnCoordinate(double *arrayV, double *arrayG, int size);
+    matrixImg*  twoConvolution(double *arrayV, double *arrayG, int size);
 
     void convolution(double *mass,int sizeN,int sizeM);
     static matrixImg* convolution(matrixImg *matrixImg, double *mass, int sizeN, int sizeM);

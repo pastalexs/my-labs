@@ -236,7 +236,7 @@ matrixImg *matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, in
     }
     return new matrixImg(&resultImg,matrix->getWidth(),matrix->getHeignt());
 }
-matrixImg *matrixImg::sobelOnCoordinate(double *arrayV, double *arrayG, int size) {
+matrixImg *matrixImg:: twoConvolution(double *arrayV, double *arrayG, int size) {
     int one=1;
 
     matrixImg* x = convolution(new matrixImg(&vectorImg,width,height),arrayV,size,one);

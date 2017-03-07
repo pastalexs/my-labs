@@ -63,7 +63,7 @@ void MainWindow::gauss(QPixmap pix){
     int size3=result->size();
     //lab1->convolution(massCore,size3,size1);
    //lab1->convolution(massCore,size1,size3);
-    matrixImg* gauss = lab1->sobelOnCoordinate(massCore,massCore,size3);
+    matrixImg* gauss = lab1-> twoConvolution(massCore,massCore,size3);
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(*(gauss->getImg())));
 }
@@ -83,9 +83,9 @@ void MainWindow::lab1(QPixmap pix){
 
     int size3=3;
 
-    matrixImg* x = lab1->sobelOnCoordinate(massVert,massGoris,size3);
+    matrixImg* x = lab1-> twoConvolution(massVert,massGoris,size3);
 
-    matrixImg* y = lab1->sobelOnCoordinate(massGoris,massVert,size3);
+    matrixImg* y = lab1-> twoConvolution(massGoris,massVert,size3);
 
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(*lab1->gradient(x,y)));
