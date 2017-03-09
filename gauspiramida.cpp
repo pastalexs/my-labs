@@ -2,9 +2,9 @@
 
 GausPiramida::GausPiramida(matrixImg *img)
 {
-    level=0;
+    //level=0;
    // matrix= new matrixImg(img->getVector(),img->getWidth(),img->getHeignt());
-    sigma=1.6;
+    //sigma=1.6;
    // deltaSigma=
     //int scale; //масштаб
     /*gauss(scale);

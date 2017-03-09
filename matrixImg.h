@@ -9,32 +9,32 @@ using namespace std;
 class matrixImg
 {
 public:
-    matrixImg(QPixmap *pix);
-    matrixImg(vector<double> *vector, int width, int height);
+    matrixImg(const QPixmap *pix);
+    matrixImg(const vector<double> *vector, int width, int height);
 
     QImage* getImg() const;
-    static QImage* getImg(vector<double> *vector, int width, int height);
+    static QImage* getImg(const vector<double> *vector, int width, int height);
 
-    matrixImg*  twoConvolution(double *arrayV, double *arrayG, int size);
+    matrixImg*  twoConvolution(const double *arrayV,const double *arrayG, int size);
 
-    void convolution(double *mass,int sizeN,int sizeM);
-    static matrixImg* convolution(matrixImg *matrixImg, double *mass, int sizeN, int sizeM);
+    void convolution(const double *mass,int sizeN,int sizeM);
+    static matrixImg* convolution(matrixImg *matrixImg, const double *mass, int sizeN, int sizeM);
 
     static QImage* gradient(matrixImg *matrixX, matrixImg *imagY);
 
     vector<double>* getVector();
-    int getWidth();
-    int getHeignt();
+    int getWidth() const;
+    int getHeignt() const;
 private:
     int width, height;
     vector<double> vectorImg;
 
     vector<double> convolution(vector<double> *img, double *mass, int sizeN, int sizeM);
 
-    double getElement(int i, int j, int sizeM, int sizeN, int column, int row) const;
-    static double getElement(matrixImg *matrix, int i, int j, int sizeM, int sizeN, int column, int row);
+    double getElement(int column, int row) const;
+    static double getElement(matrixImg *matrix, int column, int row);
 
-    vector<double> matrixImg::convertToVector(QImage *image) const;
+    vector<double> convertToVector(QImage *image) const;
     vector<double> getGrayVector(QPixmap *pix) const;
 
 

@@ -1,8 +1,6 @@
 #include "matrixImg.h"
 
-
-
-matrixImg::matrixImg(QPixmap *pix)
+matrixImg::matrixImg(const QPixmap *pix)
 {
     QImage img = pix->toImage();
     this->width = img.width();
@@ -10,7 +8,7 @@ matrixImg::matrixImg(QPixmap *pix)
     this->vectorImg= this->convertToVector(&img);
 }
 
-matrixImg::matrixImg(vector<double> *vector, int width, int height)
+matrixImg::matrixImg(const vector<double> *vector, int width, int height)
 {
     this->width = width;
     this->height = height;
@@ -108,8 +106,8 @@ QImage *matrixImg::getImg() const{
     return result;
 }
 
-QImage *matrixImg::getImg(vector<double> *vector,int width,int height){
-    double min=*min_element(vector->begin(),vector->end()) ;
+QImage *matrixImg::getImg(const vector<double> *vector, int width, int height){
+    double min=*min_element(vector->begin(),vector->end());
     double max=*max_element(vector->begin(),vector->end());
     double range=max - min;
     QImage* result = new QImage(width,height,QImage::Format_RGB32);
@@ -121,7 +119,6 @@ QImage *matrixImg::getImg(vector<double> *vector,int width,int height){
                 QColor color;
                 double G=(vector->at(j*height+i)-min)/range;
                 G*=255;
-                //color.setRgb(G,G,G);
                if(G>255)
                 {
                     color.setRgb(255,255,255);
@@ -141,21 +138,7 @@ QImage *matrixImg::getImg(vector<double> *vector,int width,int height){
     return result;
 }
 
-double matrixImg::getElement(int i, int j, int sizeM, int sizeN,int column,int row) const {
-  //  return getElement(&vectorImg, i, j, sizeM, sizeN, column, row);
-    if(sizeM==1){
-    column+=i-1;
-    row+=j;
-    }else{
-        if(sizeN==1){
-            column+=i;
-            row+=j-1;
-        }
-        else{
-            column+=i-1;
-            row+=j-1;
-        }
-    }
+double matrixImg::getElement(int column,int row) const {
 
     if(row>=0&&row<(height-1)&&column>=0&&column<width){
         return vectorImg.at(column*height+row);
@@ -164,22 +147,9 @@ double matrixImg::getElement(int i, int j, int sizeM, int sizeN,int column,int r
         return 255;
     }
 }
-double matrixImg::getElement(matrixImg *matrix, int i, int j, int sizeM, int sizeN, int column, int row) {
+double matrixImg::getElement(matrixImg *matrix, int column, int row) {
 
-    vector<double>* vector = matrix->getVector();
-    if(sizeM==1){
-    column+=i-1;
-    row+=j;
-    }else{
-        if(sizeN==1){
-            column+=i;
-            row+=j-1;
-        }
-        else{
-            column+=i-1;
-            row+=j-1;
-        }
-    }
+     vector<double>* vector = matrix->getVector();
 
     if(row>=0&&row<matrix->getHeignt()&&column>=0&&column<matrix->getWidth()){
         return vector->at(column*matrix->getHeignt()+row);
@@ -189,7 +159,7 @@ double matrixImg::getElement(matrixImg *matrix, int i, int j, int sizeM, int siz
     }
 }
 
-void matrixImg::convolution(double *mass, int sizeN, int sizeM)//свертка
+void matrixImg::convolution(const double *mass, int sizeN, int sizeM)//свертка
 {
     matrixImg* result=convolution(new matrixImg(&vectorImg,width,height),mass,sizeN,sizeM);
     vector<double>* resultImg = result->getVector();
@@ -215,7 +185,7 @@ void matrixImg::convolution(double *mass, int sizeN, int sizeM)//свертка
     vectorImg.insert(vectorImg.end(), resultImg->begin(), resultImg->end());
 }
 
-matrixImg *matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, int sizeM)//свертка
+matrixImg *matrixImg::convolution(matrixImg *matrix, const double *mass, int sizeN, int sizeM)//свертка
 {
     vector <double> resultImg;
     for(int m=0;m<matrix->getWidth();m++)
@@ -227,7 +197,7 @@ matrixImg *matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, in
             for(int i=0;i<sizeN;i++){
                 double summaString=0;
                 for(int j=0;j<sizeM;j++){
-                    summaString+=mass[indexMass++]*getElement(matrix,m,k,sizeM,sizeN,j,i);
+                    summaString+=mass[indexMass++]*getElement(matrix,m+sizeM/2-j,k+sizeN/2-i);
                 }
                 resultZnath+=summaString;
             }
@@ -236,7 +206,7 @@ matrixImg *matrixImg::convolution(matrixImg *matrix, double *mass, int sizeN, in
     }
     return new matrixImg(&resultImg,matrix->getWidth(),matrix->getHeignt());
 }
-matrixImg *matrixImg:: twoConvolution(double *arrayV, double *arrayG, int size) {
+matrixImg *matrixImg:: twoConvolution(const double *arrayV, const double *arrayG, int size) {
     int one=1;
 
     matrixImg* x = convolution(new matrixImg(&vectorImg,width,height),arrayV,size,one);
@@ -246,17 +216,17 @@ matrixImg *matrixImg:: twoConvolution(double *arrayV, double *arrayG, int size) 
 }
 
 
-vector<double>* matrixImg::getVector()
+vector<double> *matrixImg::getVector()
 {
     return &vectorImg;
 }
 
-int matrixImg::getWidth()
+int matrixImg::getWidth() const
 {
     return width;
 }
 
-int matrixImg::getHeignt()
+int matrixImg::getHeignt() const
 {
     return height;
 }

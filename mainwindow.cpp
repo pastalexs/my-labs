@@ -59,7 +59,6 @@ void MainWindow::gauss(QPixmap pix){
         summa+=result->at(i);
         massCore[i]=result->at(i);
     }
-    int size1=1;
     int size3=result->size();
     //lab1->convolution(massCore,size3,size1);
    //lab1->convolution(massCore,size1,size3);
