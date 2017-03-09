@@ -15,7 +15,7 @@ public:
     QImage* getImg() const;
     static QImage* getImg(const vector<double> *vector, int width, int height);
 
-    matrixImg*  twoConvolution(const double *arrayV,const double *arrayG, int size);
+    matrixImg*  twoConvolution(const double *arrayV,const double *arrayG, int size) const;
 
     void convolution(const double *mass,int sizeN,int sizeM);
     static matrixImg* convolution(matrixImg *matrixImg, const double *mass, int sizeN, int sizeM);
@@ -29,7 +29,7 @@ private:
     int width, height;
     vector<double> vectorImg;
 
-    vector<double> convolution(vector<double> *img, double *mass, int sizeN, int sizeM);
+    vector<double> convolution(vector<double> *img, double *mass, int sizeN, int sizeM) const;
 
     double getElement(int column, int row) const;
     static double getElement(matrixImg *matrix, int column, int row);

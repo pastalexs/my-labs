@@ -206,7 +206,7 @@ matrixImg *matrixImg::convolution(matrixImg *matrix, const double *mass, int siz
     }
     return new matrixImg(&resultImg,matrix->getWidth(),matrix->getHeignt());
 }
-matrixImg *matrixImg:: twoConvolution(const double *arrayV, const double *arrayG, int size) {
+matrixImg *matrixImg:: twoConvolution(const double *arrayV, const double *arrayG, int size) const {
     int one=1;
 
     matrixImg* x = convolution(new matrixImg(&vectorImg,width,height),arrayV,size,one);
