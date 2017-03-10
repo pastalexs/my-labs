@@ -49,7 +49,7 @@ void MainWindow::on_pushButton_2_clicked()
 }
 
 void MainWindow::gauss(QPixmap pix){
-    matrixImg *lab1 = new matrixImg(&pix);
+    matrixImg *lab1 = new matrixImg(pix);
     double sigma=4;
 
     vector<double>* result=GausPiramida::getKernelGauss(sigma);
@@ -60,11 +60,9 @@ void MainWindow::gauss(QPixmap pix){
         massCore[i]=result->at(i);
     }
     int size3=result->size();
-    //lab1->convolution(massCore,size3,size1);
-   //lab1->convolution(massCore,size1,size3);
-    matrixImg* gauss = lab1-> twoConvolution(massCore,massCore,size3);
+    matrixImg gauss = lab1-> twoConvolution(massCore,massCore,size3);
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(*(gauss->getImg())));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(gauss.getImg()));
 }
 
 void MainWindow::pyramid(QPixmap pix){
@@ -75,19 +73,19 @@ void MainWindow::pyramid(QPixmap pix){
 }
 
 void MainWindow::lab1(QPixmap pix){
-    matrixImg *lab1 = new matrixImg(&pix);
+    matrixImg *lab1 = new matrixImg(pix);
 
     double massVert[] ={1,0,-1};
     double massGoris[] = {1,2,1};
 
     int size3=3;
 
-    matrixImg* x = lab1-> twoConvolution(massVert,massGoris,size3);
+    matrixImg x = lab1-> twoConvolution(massVert,massGoris,size3);
 
-    matrixImg* y = lab1-> twoConvolution(massGoris,massVert,size3);
+    matrixImg y = lab1-> twoConvolution(massGoris,massVert,size3);
 
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(*lab1->gradient(x,y)));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(lab1->gradient(x,y)));
 }
 
 
