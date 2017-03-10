@@ -18,11 +18,11 @@ public:
     matrixImg  twoConvolution(const double arrayV[], const double arrayG[], int size) const;
 
     void convolution(const double array[],int sizeN,int sizeM);
-    static matrixImg convolution(matrixImg &matrixImg, const double array[], int sizeN, int sizeM);
+    static matrixImg convolution(const matrixImg &matrixImg, const double array[], int sizeN, int sizeM);
 
-    static QImage gradient(matrixImg &matrixX, matrixImg &imagY);
+    static QImage gradient(const matrixImg &matrixX,const matrixImg &imagY);
 
-    vector<double>* getVector();
+    const vector<double> &getVector() const;
     int getWidth() const;
     int getHeignt() const;
 
@@ -31,10 +31,10 @@ private:
     vector<double> vectorImg;
 
     double getElement(int column, int row) const;
-    static double getElement(matrixImg &matrix, int column, int row);
+    static double getElement(const matrixImg &matrix, int column, int row);
 
-    vector<double> convertToVector(QImage &image) const;
-    vector<double> getGrayVector(QPixmap &pix) const;
+    vector<double> convertToVector(const QImage &image) const;
+    vector<double> getGrayVector(const QPixmap &pix) const;
 
 };
 

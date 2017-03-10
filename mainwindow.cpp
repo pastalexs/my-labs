@@ -82,10 +82,10 @@ void MainWindow::lab1(QPixmap pix){
 
     matrixImg x = lab1-> twoConvolution(massVert,massGoris,size3);
 
-    matrixImg y = lab1-> twoConvolution(massGoris,massVert,size3);
+   // matrixImg y = lab1-> twoConvolution(massGoris,massVert,size3);
 
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(lab1->gradient(x,y)));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(x.getImg()/*lab1->gradient(x,y)*/));
 }
 
 

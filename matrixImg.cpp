@@ -15,7 +15,7 @@ matrixImg::matrixImg(const vector<double> &vector, int width, int height)
     vectorImg.reserve(vector.size()+vectorImg.size());
     vectorImg.insert(vectorImg.end(), vector.begin(), vector.end());
 }
-vector<double> matrixImg::getGrayVector(QPixmap &pix) const {
+vector<double> matrixImg::getGrayVector(const QPixmap &pix) const {
     vector <double> gray;
     QImage image = pix.toImage();
     for(int j=0;j<width;j++)
@@ -30,24 +30,24 @@ vector<double> matrixImg::getGrayVector(QPixmap &pix) const {
     return gray;
 }
 
-QImage matrixImg::gradient(matrixImg &matrixX, matrixImg &matrixImgY)
+QImage matrixImg::gradient(const matrixImg &matrixX, const matrixImg &matrixImgY)
 {
-    vector<double>* x = matrixX.getVector();
-    vector<double>* y = matrixImgY.getVector();
+    const vector<double>& x = matrixX.getVector();
+    const vector<double>& y = matrixImgY.getVector();
     vector <double> resultImg;
     for(int i=0;i<matrixX.getWidth();i++)
     {
         for(int j=0;j<matrixX.getHeignt();j++)
         {
-            double Gx= x->at(i*matrixX.getHeignt()+j);
-            double Gy= y->at(i*matrixX.getHeignt()+j);
+            double Gx = x.at(i*matrixX.getHeignt()+j);
+            double Gy = y.at(i*matrixX.getHeignt()+j);
             resultImg.push_back(sqrt(Gx*Gx+Gy*Gy));
         }
     }
    return getImg(resultImg,matrixX.getWidth(),matrixX.getHeignt());
 }
 
-vector <double> matrixImg::convertToVector(QImage &image) const {
+vector <double> matrixImg::convertToVector(const QImage &image) const {
     vector <double> myVector;
     for(int j=0;j<image.width();j++)
     {
@@ -134,12 +134,12 @@ double matrixImg::getElement(int column,int row) const {
         return 255;
     }
 }
-double matrixImg::getElement(matrixImg &matrix, int column, int row) {
+double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
 
-     vector<double>* vector = matrix.getVector();
+     const vector<double>& vector = matrix.getVector();
 
     if(row>=0&&row<matrix.getHeignt()&&column>=0&&column<matrix.getWidth()){
-        return vector->at(column*matrix.getHeignt()+row);
+        return vector.at(column*matrix.getHeignt()+row);
     }
     else {
         return 255;
@@ -148,14 +148,31 @@ double matrixImg::getElement(matrixImg &matrix, int column, int row) {
 
 void matrixImg::convolution(const double array[], int sizeN, int sizeM)//свертка
 {
-    matrixImg result=convolution(matrixImg(vectorImg,width,height),array,sizeN,sizeM);
-    vector<double>* resultImg = result.getVector();
+    //matrixImg result=convolution(matrixImg(vectorImg,width,height),array,sizeN,sizeM);
+    //const vector<double>& resultImg = result.getVector();
+    vector <double> resultImg;
+    for(int m=0;m<width;m++)
+    {
+        for(int k=0;k<height;k++)
+        {
+            double resultZnath=0;
+            int indexMass=0;
+            for(int i=0;i<sizeN;i++){
+                double summaString=0;
+                for(int j=0;j<sizeM;j++){
+                    summaString+=array[indexMass++]*getElement(m+sizeM/2-j,k+sizeN/2-i);
+                }
+                resultZnath+=summaString;
+            }
+            resultImg.push_back(resultZnath);
+        }
+    }
     vectorImg.clear();
-    vectorImg.reserve(resultImg->size()+vectorImg.size());
-    vectorImg.insert(vectorImg.end(), resultImg->begin(), resultImg->end());
+    vectorImg.reserve(resultImg.size()+vectorImg.size());
+    vectorImg.insert(vectorImg.end(), resultImg.begin(), resultImg.end());
 }
 
-matrixImg matrixImg::convolution(matrixImg &matrix, const double array[], int sizeN, int sizeM)//свертка
+matrixImg matrixImg::convolution(const matrixImg &matrix, const double array[], int sizeN, int sizeM)//свертка
 {
     vector <double> resultImg;
     for(int m=0;m<matrix.getWidth();m++)
@@ -185,9 +202,9 @@ matrixImg matrixImg::twoConvolution(const double arrayV[], const double arrayG[]
     return x;
 }
 
-vector<double> *matrixImg::getVector()
+const vector<double> &matrixImg::getVector() const
 {
-    return &vectorImg;
+    return vectorImg;
 }
 
 int matrixImg::getWidth() const
