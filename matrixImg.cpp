@@ -131,7 +131,7 @@ double matrixImg::getElement(int column,int row) const {
         return vectorImg.at(column*height+row);
     }
     else {
-        return 255;
+        return 0;
     }
 }
 double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
@@ -142,7 +142,7 @@ double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
         return vector.at(column*matrix.getHeignt()+row);
     }
     else {
-        return 255;
+        return 0;
     }
 }
 
