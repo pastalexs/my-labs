@@ -20,10 +20,10 @@ class GausPiramida
 public:
     GausPiramida(const matrixImg &img, int countlevel, int countOst);
     static vector<double> getKernelGauss(double sigma);
-    void savePiramid();
+    void savePiramid() const;
 
 private:
-    matrixImg getGauss(const matrixImg &img,double deltaSigma);
+    matrixImg getGauss(const matrixImg &img,double deltaSigma) const;
     vector<ElementLevelsPiramid> myVector;
 
 };

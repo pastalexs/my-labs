@@ -119,7 +119,7 @@ QImage matrixImg::getImg() const{
                 result.setPixel(j,i,color.rgb());
             }
             else {
-                 QColor color(100,100,100);
+                QColor color(100,100,100);
                 result.setPixel(j,i, color.rgb());
             }
         }
@@ -140,18 +140,18 @@ QImage matrixImg::getImg(const vector<double> &vector, int width, int height){
                 QColor color;
                 double G=(vector.at(j*height+i)-min)/range;
                 G*=255;
-               if(G>255)
+                if(G>255)
                 {
                     color.setRgb(255,255,255);
                 }
                 else
                 {
-                   color.setRgb(G,G,G);
+                    color.setRgb(G,G,G);
                 }
                 result.setPixel(j,i,color.rgb());
             }
             else {
-                 QColor color(100,100,100);
+                QColor color(100,100,100);
                 result.setPixel(j,i, color.rgb());
             }
         }
@@ -176,18 +176,18 @@ double matrixImg::getElement(int column,int row) const {
         }else{
             column=width-1;
         }
-         return vectorImg.at(column*height+row);
+        return vectorImg.at(column*height+row);
     }
 }
 double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
 
-     const vector<double>& vector = matrix.getVector();
+    const vector<double>& vector = matrix.getVector();
 
     if(row>=0&&row<matrix.getHeignt()&&column>=0&&column<matrix.getWidth()){
         return vector.at(column*matrix.getHeignt()+row);
     }
     else {
-       // return 0;
+        // return 0;
         if(row<0){
             row=0;
         }else{

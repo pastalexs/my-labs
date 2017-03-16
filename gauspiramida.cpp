@@ -31,7 +31,7 @@ GausPiramida::GausPiramida(const matrixImg &img, int countlevel, int countOst)
 
     }
 }
-vector<double> GausPiramida::getKernelGauss(double sigma) {
+vector<double> GausPiramida::getKernelGauss(double sigma)  {
     vector<double> result;
     double element=1/(sqrt(2*3.14159265358979323846)*sigma);
     double element2=2*sigma*sigma;
@@ -49,7 +49,7 @@ vector<double> GausPiramida::getKernelGauss(double sigma) {
     return resultImg;
 }
 
-void GausPiramida::savePiramid()
+void GausPiramida::savePiramid() const
 {
     for(int i=0;i<myVector.size();i++){
         ElementLevelsPiramid element = myVector.at(i);
@@ -59,7 +59,7 @@ void GausPiramida::savePiramid()
     }
 }
 
-matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma)
+matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma) const
 {
     vector<double> result=GausPiramida::getKernelGauss(deltaSigma);
     double summa=0;
