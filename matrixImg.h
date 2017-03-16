@@ -9,8 +9,11 @@ using namespace std;
 class matrixImg
 {
 public:
+    matrixImg();
     matrixImg(const QPixmap &pix);
     matrixImg(const vector<double> &vector, int width, int height);
+
+    matrixImg& operator=(matrixImg& matrixImg) = default;
 
     QImage getImg() const;
     static QImage getImg(const vector<double> &vector, int width, int height);
@@ -21,6 +24,10 @@ public:
     static matrixImg convolution(const matrixImg &matrixImg, const double array[], int sizeN, int sizeM);
 
     static QImage gradient(const matrixImg &matrixX,const matrixImg &imagY);
+
+    matrixImg degradationImg() const;
+
+    void save(QString name) const;
 
     const vector<double> &getVector() const;
     int getWidth() const;

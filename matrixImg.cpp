@@ -1,5 +1,10 @@
 #include "matrixImg.h"
 
+matrixImg::matrixImg()
+{
+
+}
+
 matrixImg::matrixImg(const QPixmap &pix)
 {
     QImage img = pix.toImage();
@@ -44,7 +49,36 @@ QImage matrixImg::gradient(const matrixImg &matrixX, const matrixImg &matrixImgY
             resultImg.push_back(sqrt(Gx*Gx+Gy*Gy));
         }
     }
-   return getImg(resultImg,matrixX.getWidth(),matrixX.getHeignt());
+    return getImg(resultImg,matrixX.getWidth(),matrixX.getHeignt());
+}
+
+matrixImg matrixImg::degradationImg() const
+{
+    int sizeArray=2;
+    vector <double> resultImg;
+    for(int i=0;i<width;i+=sizeArray){
+        for(int j=0;j<height;j+=sizeArray){
+            double summ=0;
+            for(int m=i;m<sizeArray+i;m++){
+                for(int k=j;k<sizeArray+j;k++)
+                    summ+=getElement(m,k);
+            }
+            resultImg.push_back(summ/(sizeArray*sizeArray));
+        }
+    }
+    int w=0,h=0;
+    if(width%2!=0){
+        w=1;
+    }
+    if(height%2!=0){
+        h=1;
+    }
+    return matrixImg(resultImg,width/sizeArray+width%2,height/sizeArray+height%2);
+}
+
+void matrixImg::save(QString name) const
+{
+    getImg().save(name+".png","png");
 }
 
 vector <double> matrixImg::convertToVector(const QImage &image) const {
@@ -131,7 +165,18 @@ double matrixImg::getElement(int column,int row) const {
         return vectorImg.at(column*height+row);
     }
     else {
-        return 0;
+        //return 0;
+        if(row<0){
+            row=0;
+        }else{
+            row=height-1;
+        }
+        if(column<0){
+            column=0;
+        }else{
+            column=width-1;
+        }
+         return vectorImg.at(column*height+row);
     }
 }
 double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
@@ -142,7 +187,18 @@ double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
         return vector.at(column*matrix.getHeignt()+row);
     }
     else {
-        return 0;
+       // return 0;
+        if(row<0){
+            row=0;
+        }else{
+            row=matrix.getHeignt()-1;
+        }
+        if(column<0){
+            column=0;
+        }else{
+            column=matrix.getWidth()-1;
+        }
+        return vector.at(column*matrix.getHeignt()+row);
     }
 }
 
@@ -216,3 +272,5 @@ int matrixImg::getHeignt() const
 {
     return height;
 }
+
+

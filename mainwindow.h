@@ -28,7 +28,7 @@ private:
     void lab1(QPixmap pix);
     void gauss(QPixmap pix);
 
-    void pyramid(QPixmap pix);
+    void lab2(QPixmap pix);
 };
 
 #endif // MAINWINDOW_H

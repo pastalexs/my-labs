@@ -19,9 +19,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView->setScene(scene);
     ui->graphicsView_2->setScene(scene2);
     ui->graphicsView->resize(pix.size());
-    this->lab1(pix);
-    //this->gauss(pix);
-   //this->pyramid(pix);
+    // this->lab1(pix);
+    this->gauss(pix);
+    this->lab2(pix);
     myImg=pix;
 }
 
@@ -32,10 +32,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_clicked()
 {
-   /* QPixmap pix;
+    /* QPixmap pix;
     QString imgName = QFileDialog::getOpenFileName(0, "Выбор изображения", "", "*.jpg *.png");
     pix.load(imgName);*/
-   /* QPixmap pix;
+    /* QPixmap pix;
     pix.load("img.png");
     ui->graphicsView->scene()->clear();
     ui->graphicsView->scene()->addPixmap(pix);*/
@@ -52,24 +52,23 @@ void MainWindow::gauss(QPixmap pix){
     matrixImg *lab1 = new matrixImg(pix);
     double sigma=4;
 
-    vector<double>* result=GausPiramida::getKernelGauss(sigma);
+    vector<double> result=GausPiramida::getKernelGauss(sigma);
     double summa=0;
-    double *massCore = new double[result->size()];
-    for(int i=0;i<result->size();i++){
-        summa+=result->at(i);
-        massCore[i]=result->at(i);
+    double *massCore = new double[result.size()];
+    for(int i=0;i<result.size();i++){
+        summa+=result.at(i);
+        massCore[i]=result.at(i);
     }
-    int size3=result->size();
+    int size3=result.size();
     matrixImg gauss = lab1-> twoConvolution(massCore,massCore,size3);
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(gauss.getImg()));
 }
 
-void MainWindow::pyramid(QPixmap pix){
-    /*matrixImg *lab1 = new matrixImg(&pix);
-    lab1->pyramid(2);
-    ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage((lab1->getImg())));*/
+void MainWindow::lab2(QPixmap pix){
+    matrixImg lab2 = matrixImg(pix);
+    GausPiramida piramid = GausPiramida(lab2,9,9);
+    piramid.savePiramid();
 }
 
 void MainWindow::lab1(QPixmap pix){
