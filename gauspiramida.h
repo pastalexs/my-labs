@@ -18,7 +18,7 @@ struct ElementLevelsPiramid{
 class GausPiramida
 {
 public:
-    GausPiramida(const matrixImg &img, int countlevel, int countOst);
+    GausPiramida(const matrixImg &img, int countlevel, int countOct);
     static vector<double> getKernelGauss(double sigma);
     void savePiramid() const;
 

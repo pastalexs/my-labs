@@ -67,7 +67,7 @@ void MainWindow::gauss(QPixmap pix){
 
 void MainWindow::lab2(QPixmap pix){
     matrixImg lab2 = matrixImg(pix);
-    GausPiramida piramid = GausPiramida(lab2,5,5);
+    GausPiramida piramid = GausPiramida(lab2,11,1);
     piramid.savePiramid();
 }
 

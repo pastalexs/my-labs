@@ -1,11 +1,11 @@
 #include "gauspiramida.h"
 
 
-GausPiramida::GausPiramida(const matrixImg &img, int countlevel, int countOst)
+GausPiramida::GausPiramida(const matrixImg &img, int countlevel, int countOct)
 {
     double intSigma=0.5;
     double zeroSigma=1.6;
-    double k = pow(2,(1./countOst));
+    double k = pow(2,(1./countOct));
     double deltaSigma = sqrt(pow(zeroSigma,2) - pow(intSigma,2));
 
     matrixImg newImg = getGauss(img,deltaSigma);
@@ -13,10 +13,10 @@ GausPiramida::GausPiramida(const matrixImg &img, int countlevel, int countOst)
     ElementLevelsPiramid element = ElementLevelsPiramid(newImg,zeroSigma,zeroSigma);
 
     for(int i=0;i<countlevel;i++){
-        for(int j=0;j<countOst;j++){
+        for(int j=0;j<countOct;j++){
             myVector.push_back(element);
             double sigma=element.zeroSigma*pow(k,i);
-            if(j==countlevel-1){
+            if(j==countOct-1){
                 newImg = newImg.degradationImg();
                 element = ElementLevelsPiramid(newImg,zeroSigma,sigma);
             }
