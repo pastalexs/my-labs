@@ -3,28 +3,28 @@
 
 #include "vector"
 #include <matrixImg.h>
-struct ElementLevelsPiramid{
+struct ElementPiramid{
     matrixImg myImg;
     double zeroSigma;
-    double ostav;
+    double sigma;
 
-    ElementLevelsPiramid(matrixImg &img, double zeroS, double ost){
+    ElementPiramid(matrixImg &img, double zeroS, double ost){
         myImg=img;
         zeroSigma=zeroS;
-        ostav=ost;
+        sigma=ost;
     }
 };
 
 class GausPiramida
 {
 public:
-    GausPiramida(const matrixImg &img, int countlevel, int countOct);
+    GausPiramida(const matrixImg &img, int countOctav, int countLevel);
     static vector<double> getKernelGauss(double sigma);
     void savePiramid() const;
 
 private:
     matrixImg getGauss(const matrixImg &img,double deltaSigma) const;
-    vector<ElementLevelsPiramid> myVector;
+    vector<ElementPiramid> myVector;
 
 };
 

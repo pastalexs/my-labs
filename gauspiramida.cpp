@@ -1,31 +1,31 @@
 #include "gauspiramida.h"
 
 
-GausPiramida::GausPiramida(const matrixImg &img, int countlevel, int countOct)
+GausPiramida::GausPiramida(const matrixImg &img, int countOctav, int countLevel)
 {
-    double intSigma=0.5;
-    double zeroSigma=1.6;
-    double k = pow(2,(1./countOct));
+    const double intSigma=0.5;
+    const double zeroSigma=1.6;
+    const double k = pow(2,(1./countOctav));
     double deltaSigma = sqrt(pow(zeroSigma,2) - pow(intSigma,2));
 
     matrixImg newImg = getGauss(img,deltaSigma);
 
-    ElementLevelsPiramid element = ElementLevelsPiramid(newImg,zeroSigma,zeroSigma);
+    ElementPiramid element = ElementPiramid(newImg,zeroSigma,zeroSigma);
 
-    for(int i=0;i<countlevel;i++){
-        for(int j=0;j<countOct;j++){
+    for(int i=0;i<countOctav;i++){
+        for(int j=0;j<countLevel;j++){
             myVector.push_back(element);
-            double sigma=element.zeroSigma*pow(k,i);
-            if(j==countOct-1){
+            double sigma=element.zeroSigma*k;
+            if(j==countLevel-1){
                 newImg = newImg.degradationImg();
-                element = ElementLevelsPiramid(newImg,zeroSigma,sigma);
+                element = ElementPiramid(newImg,sigma,sigma);
             }
             else{
-                double nextSigma=element.ostav*k;
-                deltaSigma = sqrt(pow(nextSigma,2) - pow(element.ostav,2));
+                double nextSigma=element.sigma*k;
+                deltaSigma = sqrt(pow(nextSigma,2) - pow(element.sigma,2));
 
                 newImg = getGauss(newImg,deltaSigma);
-                element = ElementLevelsPiramid(newImg,nextSigma,sigma);
+                element = ElementPiramid(newImg,nextSigma,sigma);
             }
         }
 
@@ -52,9 +52,9 @@ vector<double> GausPiramida::getKernelGauss(double sigma)  {
 void GausPiramida::savePiramid() const
 {
     for(int i=0;i<myVector.size();i++){
-        ElementLevelsPiramid element = myVector.at(i);
+        ElementPiramid element = myVector.at(i);
         if(element.myImg.getHeignt()!=0&&element.myImg.getWidth()!=0){
-            element.myImg.save("C:\\AGTU\\img\\"+QString::number(i)+" "+QString::number(element.ostav));
+            element.myImg.save("C:\\AGTU\\img\\"+QString::number(i)+" "+QString::number(element.sigma));
         }
     }
 }
