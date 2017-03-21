@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *scene = new QGraphicsScene();
     QGraphicsScene *scene2 = new QGraphicsScene();
     QPixmap pix;
-    pix.load("img.png");
+    pix.load("img4.png");
     scene->addPixmap(pix);
     ui->graphicsView->setScene(scene);
     ui->graphicsView_2->setScene(scene2);
@@ -60,7 +60,7 @@ void MainWindow::gauss(QPixmap pix){
         massCore[i]=result.at(i);
     }
     int size3=result.size();
-    matrixImg gauss = lab1-> twoConvolution(massCore,massCore,size3);
+    matrixImg gauss = lab1-> twoConvolution(Border::Reflect,massCore,massCore,size3);
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(gauss.getImg()));
 }
@@ -79,9 +79,9 @@ void MainWindow::lab1(QPixmap pix){
 
     int size3=3;
 
-    matrixImg x = lab1-> twoConvolution(massVert,massGoris,size3);
+    matrixImg x = lab1-> twoConvolution(Border::Black,massVert,massGoris,size3);
 
-    matrixImg y = lab1-> twoConvolution(massGoris,massVert,size3);
+    matrixImg y = lab1-> twoConvolution(Border::Black,massGoris,massVert,size3);
 
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(lab1->gradient(x,y)));

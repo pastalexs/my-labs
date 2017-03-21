@@ -17,7 +17,7 @@ GausPiramida::GausPiramida(const matrixImg &img, int countOctav, int countLevel)
             myVector.push_back(element);
             double sigma=element.zeroSigma*k;
             if(j==countLevel-1){
-                newImg = newImg.degradationImg();
+                newImg = newImg.degradationImg(Border::Wrapping);
                 element = ElementPiramid(newImg,sigma,sigma);
             }
             else{
@@ -69,5 +69,5 @@ matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma) const
         massCore[i]=result.at(i);
     }
     int size3=result.size();
-    return img.twoConvolution(massCore,massCore,size3);
+    return img.twoConvolution(Border::Wrapping,massCore,massCore,size3);
 }

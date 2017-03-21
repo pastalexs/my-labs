@@ -1,4 +1,7 @@
 #include "matrixImg.h"
+#include <iostream>
+
+using namespace std;
 
 matrixImg::matrixImg()
 {
@@ -52,7 +55,7 @@ QImage matrixImg::gradient(const matrixImg &matrixX, const matrixImg &matrixImgY
     return getImg(resultImg,matrixX.getWidth(),matrixX.getHeignt());
 }
 
-matrixImg matrixImg::degradationImg() const
+matrixImg matrixImg::degradationImg(Border border) const
 {
     int sizeArray=2;
     vector <double> resultImg;
@@ -61,7 +64,7 @@ matrixImg matrixImg::degradationImg() const
             double summ=0;
             for(int m=i;m<sizeArray+i;m++){
                 for(int k=j;k<sizeArray+j;k++)
-                    summ+=getElement(m,k);
+                    summ+=getElement(border,m,k);
             }
             resultImg.push_back(summ/(sizeArray*sizeArray));
         }
@@ -159,14 +162,14 @@ QImage matrixImg::getImg(const vector<double> &vector, int width, int height){
     return result;
 }
 
-double matrixImg::getElement(int column,int row) const {
+double matrixImg::getElement(Border border,int column,int row) const {
 
     if(row>=0&&row<(height-1)&&column>=0&&column<width){
         return vectorImg.at(column*height+row);
     }
     else {
         //return 0;
-        if(row<0){
+        /*if(row<0){
             row=0;
         }else{
             row=height-1;
@@ -176,10 +179,11 @@ double matrixImg::getElement(int column,int row) const {
         }else{
             column=width-1;
         }
-        return vectorImg.at(column*height+row);
+        return vectorImg.at(column*height+row);*/
+        return getBorder(border,matrixImg(vectorImg,width,height),column,row);
     }
 }
-double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
+double matrixImg::getElement(Border border,const matrixImg &matrix, int column, int row) {
 
     const vector<double>& vector = matrix.getVector();
 
@@ -188,7 +192,7 @@ double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
     }
     else {
         // return 0;
-        if(row<0){
+        /*if(row<0){
             row=0;
         }else{
             row=matrix.getHeignt()-1;
@@ -198,11 +202,78 @@ double matrixImg::getElement(const matrixImg &matrix, int column, int row) {
         }else{
             column=matrix.getWidth()-1;
         }
-        return vector.at(column*matrix.getHeignt()+row);
+        return vector.at(column*matrix.getHeignt()+row);*/
+        return getBorder(border,matrix,column,row);
     }
 }
 
-void matrixImg::convolution(const double array[], int sizeN, int sizeM)//свертка
+double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, int row)
+{
+    const vector<double>& vector = matrix.getVector();
+    cout<<"to_colunm: "<<column<<" to_row: "<<row<<"\n";
+    switch (border) {
+    case Border::CopyValue:
+        if(row<0){
+            row=0;
+        }else{
+            if(row>=matrix.getHeignt())
+                row=matrix.getHeignt()-1;
+        }
+        if(column<0){
+            column=0;
+        }else{
+            if(column>=matrix.getWidth())
+                column=matrix.getWidth()-1;
+        }
+        break;
+    case Border::Reflect:
+        if(row<0){
+            row=abs(row);
+        }else{
+            if(row>=matrix.getHeignt())
+                row=row-matrix.getHeignt();
+        }
+        if(column<0){
+            column=abs(column);
+        }else{
+            if(column>=matrix.getWidth())
+                column=column-matrix.getWidth();
+        }
+        break;
+    case Border::Wrapping:
+        if(row<0){
+            row=matrix.getHeignt()-1+row;
+        }else{
+            if(row>=matrix.getHeignt())
+                row=row-matrix.getHeignt();
+        }
+        if(column<0){
+            column=column+matrix.getWidth();
+        }else{
+            if(column>=matrix.getWidth())
+                column=column-matrix.getWidth();
+        }
+        break;
+    default:
+        return 0;
+    }
+    if(row<0){
+        row=0;
+    }else{
+        if(row>=matrix.getHeignt())
+            row=matrix.getHeignt()-1;
+    }
+    if(column<0){
+        column=0;
+    }else{
+        if(column>=matrix.getWidth())
+            column=matrix.getWidth()-1;
+    }
+    cout<<"colunm: "<<column<<" row: "<<row<<"\n";
+    return vector.at(column*matrix.getHeignt()+row);
+}
+
+void matrixImg::convolution(Border border, const double array[], int sizeN, int sizeM)//свертка
 {
     //matrixImg result=convolution(matrixImg(vectorImg,width,height),array,sizeN,sizeM);
     //const vector<double>& resultImg = result.getVector();
@@ -216,7 +287,7 @@ void matrixImg::convolution(const double array[], int sizeN, int sizeM)//све�
             for(int i=0;i<sizeN;i++){
                 double summaString=0;
                 for(int j=0;j<sizeM;j++){
-                    summaString+=array[indexMass++]*getElement(m+sizeM/2-j,k+sizeN/2-i);
+                    summaString+=array[indexMass++]*getElement(border,m+sizeM/2-j,k+sizeN/2-i);
                 }
                 resultZnath+=summaString;
             }
@@ -228,7 +299,7 @@ void matrixImg::convolution(const double array[], int sizeN, int sizeM)//све�
     vectorImg.insert(vectorImg.end(), resultImg.begin(), resultImg.end());
 }
 
-matrixImg matrixImg::convolution(const matrixImg &matrix, const double array[], int sizeN, int sizeM)//свертка
+matrixImg matrixImg::convolution(Border border,const matrixImg &matrix, const double array[], int sizeN, int sizeM)//свертка
 {
     vector <double> resultImg;
     for(int m=0;m<matrix.getWidth();m++)
@@ -240,7 +311,7 @@ matrixImg matrixImg::convolution(const matrixImg &matrix, const double array[], 
             for(int i=0;i<sizeN;i++){
                 double summaString=0;
                 for(int j=0;j<sizeM;j++){
-                    summaString+=array[indexMass++]*getElement(matrix,m+sizeM/2-j,k+sizeN/2-i);
+                    summaString+=array[indexMass++]*getElement(border,matrix,m+sizeM/2-j,k+sizeN/2-i);
                 }
                 resultZnath+=summaString;
             }
@@ -249,11 +320,11 @@ matrixImg matrixImg::convolution(const matrixImg &matrix, const double array[], 
     }
     return matrixImg(resultImg,matrix.getWidth(),matrix.getHeignt());
 }
-matrixImg matrixImg::twoConvolution(const double arrayV[], const double arrayG[], int size) const {
+matrixImg matrixImg::twoConvolution(Border border, const double arrayV[], const double arrayG[], int size) const {
     int one=1;
 
-    matrixImg x = convolution(matrixImg(vectorImg,width,height),arrayV,size,one);
-    x = convolution(x,arrayG,one,size);
+    matrixImg x = convolution(border,matrixImg(vectorImg,width,height),arrayV,size,one);
+    x = convolution(border,x,arrayG,one,size);
 
     return x;
 }

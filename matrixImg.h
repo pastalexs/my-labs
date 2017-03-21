@@ -6,6 +6,11 @@
 
 using namespace std;
 
+enum class Border
+{
+    Black, CopyValue, Reflect,Wrapping
+};
+
 class matrixImg
 {
 public:
@@ -18,14 +23,14 @@ public:
     QImage getImg() const;
     static QImage getImg(const vector<double> &vector, int width, int height);
 
-    matrixImg  twoConvolution(const double arrayV[], const double arrayG[], int size) const;
+    matrixImg  twoConvolution(Border border,const double arrayV[], const double arrayG[], int size) const;
 
-    void convolution(const double array[],int sizeN,int sizeM);
-    static matrixImg convolution(const matrixImg &matrixImg, const double array[], int sizeN, int sizeM);
+    void convolution(Border border,const double array[],int sizeN,int sizeM);
+    static matrixImg convolution(Border border,const matrixImg &matrixImg, const double array[], int sizeN, int sizeM);
 
     static QImage gradient(const matrixImg &matrixX,const matrixImg &imagY);
 
-    matrixImg degradationImg() const;
+    matrixImg degradationImg(Border border) const;
 
     void save(QString name) const;
 
@@ -37,8 +42,10 @@ private:
     int width, height;
     vector<double> vectorImg;
 
-    double getElement(int column, int row) const;
-    static double getElement(const matrixImg &matrix, int column, int row);
+    double getElement(Border border, int column, int row) const;
+    static double getElement(Border border,const matrixImg &matrix, int column, int row);
+
+    static double getBorder(Border border,const matrixImg &matrix, int column, int row);
 
     vector<double> convertToVector(const QImage &image) const;
     vector<double> getGrayVector(const QPixmap &pix) const;
