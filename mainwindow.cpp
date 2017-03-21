@@ -14,7 +14,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *scene = new QGraphicsScene();
     QGraphicsScene *scene2 = new QGraphicsScene();
     QPixmap pix;
-    pix.load("img4.png");
+    pix.load("img.png");
     scene->addPixmap(pix);
     ui->graphicsView->setScene(scene);
     ui->graphicsView_2->setScene(scene2);

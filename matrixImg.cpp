@@ -210,7 +210,7 @@ double matrixImg::getElement(Border border,const matrixImg &matrix, int column, 
 double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, int row)
 {
     const vector<double>& vector = matrix.getVector();
-    cout<<"to_colunm: "<<column<<" to_row: "<<row<<"\n";
+   // cout<<"to_colunm: "<<column<<" to_row: "<<row<<"\n";
     switch (border) {
     case Border::CopyValue:
         if(row<0){
@@ -269,7 +269,7 @@ double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, i
         if(column>=matrix.getWidth())
             column=matrix.getWidth()-1;
     }
-    cout<<"colunm: "<<column<<" row: "<<row<<"\n";
+    //cout<<"colunm: "<<column<<" row: "<<row<<"\n";
     return vector.at(column*matrix.getHeignt()+row);
 }
 

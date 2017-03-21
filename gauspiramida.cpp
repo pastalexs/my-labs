@@ -16,16 +16,17 @@ GausPiramida::GausPiramida(const matrixImg &img, int countOctav, int countLevel)
         for(int j=0;j<countLevel;j++){
             myVector.push_back(element);
             double sigma=element.zeroSigma*k;
+
+            double nextSigma=element.sigma*k;
+            deltaSigma = sqrt(pow(nextSigma,2) - pow(element.sigma,2));
+            newImg = getGauss(newImg,deltaSigma);
+
             if(j==countLevel-1){
                 newImg = newImg.degradationImg(Border::Wrapping);
-                element = ElementPiramid(newImg,sigma,sigma);
+                element = ElementPiramid(newImg,sigma/2,nextSigma/2);
             }
             else{
-                double nextSigma=element.sigma*k;
-                deltaSigma = sqrt(pow(nextSigma,2) - pow(element.sigma,2));
-
-                newImg = getGauss(newImg,deltaSigma);
-                element = ElementPiramid(newImg,nextSigma,sigma);
+                element = ElementPiramid(newImg,sigma,nextSigma);
             }
         }
 
@@ -54,7 +55,7 @@ void GausPiramida::savePiramid() const
     for(int i=0;i<myVector.size();i++){
         ElementPiramid element = myVector.at(i);
         if(element.myImg.getHeignt()!=0&&element.myImg.getWidth()!=0){
-            element.myImg.save("C:\\AGTU\\img\\"+QString::number(i)+" "+QString::number(element.sigma));
+            element.myImg.save("C:\\AGTU\\img\\"+QString::number(i)+" "+QString::number(element.zeroSigma)+" "+QString::number(element.sigma));
         }
     }
 }
