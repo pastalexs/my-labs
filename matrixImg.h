@@ -34,6 +34,8 @@ public:
 
     void save(QString name) const;
 
+    double getElement(Border border, int column, int row) const;
+
     const vector<double> &getVector() const;
     int getWidth() const;
     int getHeignt() const;
@@ -42,7 +44,7 @@ private:
     int width, height;
     vector<double> vectorImg;
 
-    double getElement(Border border, int column, int row) const;
+
     static double getElement(Border border,const matrixImg &matrix, int column, int row);
 
     static double getBorder(Border border,const matrixImg &matrix, int column, int row);

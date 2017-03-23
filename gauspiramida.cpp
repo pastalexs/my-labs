@@ -3,6 +3,8 @@
 
 GausPiramida::GausPiramida(const matrixImg &img, int countOctav, int countLevel)
 {
+    this->countOctav=countOctav;
+    this->countLevel=countLevel;
     const double intSigma=0.5;
     const double zeroSigma=1.6;
     const double k = pow(2,(1./countOctav));
@@ -10,26 +12,27 @@ GausPiramida::GausPiramida(const matrixImg &img, int countOctav, int countLevel)
 
     matrixImg newImg = getGauss(img,deltaSigma);
 
-    ElementPiramid element = ElementPiramid(newImg,zeroSigma,zeroSigma);
+    ElementPiramid element = ElementPiramid(newImg,zeroSigma);
 
+    double globalSigma = zeroSigma;
     for(int i=0;i<countOctav;i++){
         for(int j=0;j<countLevel;j++){
             myVector.push_back(element);
-            double sigma=element.zeroSigma*k;
 
             double nextSigma=element.sigma*k;
             deltaSigma = sqrt(pow(nextSigma,2) - pow(element.sigma,2));
             newImg = getGauss(newImg,deltaSigma);
 
             if(j==countLevel-1){
-                newImg = newImg.degradationImg(Border::Wrapping);
-                element = ElementPiramid(newImg,sigma/2,nextSigma/2);
+                globalSigma=nextSigma/2;
+                newImg = newImg.degradationImg(Border::CopyValue);
+                element = ElementPiramid(newImg,globalSigma);
             }
             else{
-                element = ElementPiramid(newImg,sigma,nextSigma);
+
+                element = ElementPiramid(newImg,nextSigma);
             }
         }
-
     }
 }
 vector<double> GausPiramida::getKernelGauss(double sigma)  {
@@ -55,12 +58,12 @@ void GausPiramida::savePiramid() const
     for(int i=0;i<myVector.size();i++){
         ElementPiramid element = myVector.at(i);
         if(element.myImg.getHeignt()!=0&&element.myImg.getWidth()!=0){
-            element.myImg.save("C:\\AGTU\\img\\"+QString::number(i)+" "+QString::number(element.zeroSigma)+" "+QString::number(element.sigma));
+            element.myImg.save("C:\\AGTU\\img\\"+QString::number(i)+" "+QString::number(element.sigma));
         }
     }
 }
 
-matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma) const
+matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma)
 {
     vector<double> result=GausPiramida::getKernelGauss(deltaSigma);
     double summa=0;
@@ -70,5 +73,5 @@ matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma) const
         massCore[i]=result.at(i);
     }
     int size3=result.size();
-    return img.twoConvolution(Border::Wrapping,massCore,massCore,size3);
+    return img.twoConvolution(Border::CopyValue,massCore,massCore,size3);
 }

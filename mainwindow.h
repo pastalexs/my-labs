@@ -4,6 +4,9 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <vector>
+#include "gauspiramida.h"
+#include "matrixImg.h"
+#include "mySearchPoint.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,6 +32,7 @@ private:
     void gauss(QPixmap pix);
 
     void lab2(QPixmap pix);
+    void lab3(QPixmap pix);
 };
 
 #endif // MAINWINDOW_H

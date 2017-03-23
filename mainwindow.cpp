@@ -3,7 +3,7 @@
 #include <QLabel>
 #include <QFileDialog>
 #include "matrixImg.cpp"
-#include "gauspiramida.h"
+#include "mySearchPoint.cpp"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -20,8 +20,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->graphicsView_2->setScene(scene2);
     ui->graphicsView->resize(pix.size());
     // this->lab1(pix);
-    this->gauss(pix);
+    //this->gauss(pix);
     this->lab2(pix);
+    //this->lab3(pix);
     myImg=pix;
 }
 
@@ -69,6 +70,16 @@ void MainWindow::lab2(QPixmap pix){
     matrixImg lab2 = matrixImg(pix);
     GausPiramida piramid = GausPiramida(lab2,5,5);
     piramid.savePiramid();
+}
+
+void MainWindow::lab3(QPixmap pix)
+{
+    matrixImg lab3 = matrixImg(pix);
+    mySearchPoint pointSearch = mySearchPoint(lab3);
+    matrixImg harris= pointSearch.moravek(Border::CopyValue,0.02);
+    pointSearch.saveImgAndPoint();
+    ui->graphicsView_2->scene()->clear();
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(harris.getImg()));
 }
 
 void MainWindow::lab1(QPixmap pix){

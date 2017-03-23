@@ -168,8 +168,8 @@ double matrixImg::getElement(Border border,int column,int row) const {
         return vectorImg.at(column*height+row);
     }
     else {
-        //return 0;
-        /*if(row<0){
+       // return 0;
+        if(row<0){
             row=0;
         }else{
             row=height-1;
@@ -179,8 +179,8 @@ double matrixImg::getElement(Border border,int column,int row) const {
         }else{
             column=width-1;
         }
-        return vectorImg.at(column*height+row);*/
-        return getBorder(border,matrixImg(vectorImg,width,height),column,row);
+        return vectorImg.at(column*height+row);
+      // return getBorder(border,matrixImg(vectorImg,width,height),column,row);
     }
 }
 double matrixImg::getElement(Border border,const matrixImg &matrix, int column, int row) {
@@ -192,7 +192,7 @@ double matrixImg::getElement(Border border,const matrixImg &matrix, int column, 
     }
     else {
         // return 0;
-        /*if(row<0){
+        if(row<0){
             row=0;
         }else{
             row=matrix.getHeignt()-1;
@@ -202,15 +202,15 @@ double matrixImg::getElement(Border border,const matrixImg &matrix, int column, 
         }else{
             column=matrix.getWidth()-1;
         }
-        return vector.at(column*matrix.getHeignt()+row);*/
-        return getBorder(border,matrix,column,row);
+        return vector.at(column*matrix.getHeignt()+row);
+        //return getBorder(border,matrix,column,row);
     }
 }
 
 double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, int row)
 {
-    const vector<double>& vector = matrix.getVector();
-   // cout<<"to_colunm: "<<column<<" to_row: "<<row<<"\n";
+
+   cout<<"to_colunm: "<<column<<" to_row: "<<row<<endl;
     switch (border) {
     case Border::CopyValue:
         if(row<0){
@@ -269,7 +269,8 @@ double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, i
         if(column>=matrix.getWidth())
             column=matrix.getWidth()-1;
     }
-    //cout<<"colunm: "<<column<<" row: "<<row<<"\n";
+    cout<<"colunm: "<<column<<" row: "<<row<<endl;
+    const vector<double>& vector = matrix.getVector();
     return vector.at(column*matrix.getHeignt()+row);
 }
 

@@ -5,12 +5,10 @@
 #include <matrixImg.h>
 struct ElementPiramid{
     matrixImg myImg;
-    double zeroSigma;
     double sigma;
 
-    ElementPiramid(matrixImg &img, double zeroS, double ost){
+    ElementPiramid(matrixImg &img, double ost){
         myImg=img;
-        zeroSigma=zeroS;
         sigma=ost;
     }
 };
@@ -21,9 +19,16 @@ public:
     GausPiramida(const matrixImg &img, int countOctav, int countLevel);
     static vector<double> getKernelGauss(double sigma);
     void savePiramid() const;
+    static matrixImg getGauss(const matrixImg &img,double deltaSigma);
+
+    int getCountOctav(){ return countOctav;}
+    int getCountLevel(){ return countLevel;}
+    ElementPiramid getElementVector(int octav, int level){
+        return myVector.at(countOctav*octav+level);
+    }
 
 private:
-    matrixImg getGauss(const matrixImg &img,double deltaSigma) const;
+    int countOctav,countLevel;
     vector<ElementPiramid> myVector;
 
 };
