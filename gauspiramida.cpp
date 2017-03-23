@@ -24,7 +24,7 @@ GausPiramida::GausPiramida(const matrixImg &img, int countOctav, int countLevel)
             newImg = getGauss(newImg,deltaSigma);
 
             if(j==countLevel-1){
-                globalSigma=nextSigma/2;
+                globalSigma=nextSigma/2.;
                 newImg = newImg.degradationImg(Border::CopyValue);
                 element = ElementPiramid(newImg,globalSigma);
             }
