@@ -14,15 +14,15 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *scene = new QGraphicsScene();
     QGraphicsScene *scene2 = new QGraphicsScene();
     QPixmap pix;
-    pix.load("img.png");
+    pix.load("imgL.png");
     scene->addPixmap(pix);
     ui->graphicsView->setScene(scene);
     ui->graphicsView_2->setScene(scene2);
     ui->graphicsView->resize(pix.size());
     // this->lab1(pix);
     //this->gauss(pix);
-    this->lab2(pix);
-    //this->lab3(pix);
+    //this->lab2(pix);
+    this->lab3(pix);
     myImg=pix;
 }
 
@@ -76,10 +76,11 @@ void MainWindow::lab3(QPixmap pix)
 {
     matrixImg lab3 = matrixImg(pix);
     mySearchPoint pointSearch = mySearchPoint(lab3);
-    matrixImg harris= pointSearch.moravek(Border::CopyValue,0.02);
+    matrixImg harris= pointSearch.moravek(Border::Reflect,0.02);
+    pointSearch.adaptiveNonMaximumSuppression(500);
     pointSearch.saveImgAndPoint();
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(harris.getImg()));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(pointSearch.saveImgAndPoint()));
 }
 
 void MainWindow::lab1(QPixmap pix){

@@ -168,19 +168,7 @@ double matrixImg::getElement(Border border,int column,int row) const {
         return vectorImg.at(column*height+row);
     }
     else {
-       // return 0;
-        if(row<0){
-            row=0;
-        }else{
-            row=height-1;
-        }
-        if(column<0){
-            column=0;
-        }else{
-            column=width-1;
-        }
-        return vectorImg.at(column*height+row);
-       return getBorder(border,matrixImg(vectorImg,width,height),column,row);
+       return getBorder(border,column,row);
     }
 }
 double matrixImg::getElement(Border border,const matrixImg &matrix, int column, int row) {
@@ -206,11 +194,64 @@ double matrixImg::getElement(Border border,const matrixImg &matrix, int column, 
         return getBorder(border,matrix,column,row);
     }
 }
+double matrixImg::getBorder(Border border, int column, int row) const{
+    //cout<<"to_colunm: "<<column<<" to_row: "<<row<<endl;
+     switch (border) {
+     case Border::CopyValue:
+         if(row<0){
+             row=0;
+         }else{
+             if(row>=height)
+                 row=height-1;
+         }
+         if(column<0){
+             column=0;
+         }else{
+             if(column>=width)
+                 column=width-1;
+         }
+         break;
 
+     case Border::Reflect:
+         if(row<0){
+             row=abs(row);
+         }else{
+             if(row>=height)
+                 row=row-height;
+         }
+         if(column<0){
+             column=abs(column);
+         }else{
+             if(column>=width)
+                 column=column-width;
+         }
+         break;
+
+     case Border::Wrapping:
+         if(row<0){
+             row=height-1+row;
+         }else{
+             if(row>=height)
+                 row=row-height;
+         }
+         if(column<0){
+             column=column+width;
+         }else{
+             if(column>=width)
+                 column=column-width;
+         }
+         break;
+
+     default:
+         return 0;
+     }
+     //cout<<"colunm: "<<column<<" row: "<<row<<endl;
+     return vectorImg.at(column*height+row);
+}
 double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, int row)
 {
 
-   cout<<"to_colunm: "<<column<<" to_row: "<<row<<endl;
+   //cout<<"to_colunm: "<<column<<" to_row: "<<row<<endl;
     switch (border) {
     case Border::CopyValue:
         if(row<0){
@@ -226,6 +267,7 @@ double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, i
                 column=matrix.getWidth()-1;
         }
         break;
+
     case Border::Reflect:
         if(row<0){
             row=abs(row);
@@ -240,6 +282,7 @@ double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, i
                 column=column-matrix.getWidth();
         }
         break;
+
     case Border::Wrapping:
         if(row<0){
             row=matrix.getHeignt()-1+row;
@@ -254,10 +297,11 @@ double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, i
                 column=column-matrix.getWidth();
         }
         break;
+
     default:
         return 0;
     }
-    if(row<0){
+   /* if(row<0){
         row=0;
     }else{
         if(row>=matrix.getHeignt())
@@ -268,10 +312,10 @@ double matrixImg::getBorder(Border border,const matrixImg &matrix, int column, i
     }else{
         if(column>=matrix.getWidth())
             column=matrix.getWidth()-1;
-    }
-    cout<<"colunm: "<<column<<" row: "<<row<<endl;
-    const vector<double>& vector = matrix.getVector();
-    return vector.at(column*matrix.getHeignt()+row);
+    }*/
+    //cout<<"colunm: "<<column<<" row: "<<row<<endl;
+    //const vector<double>& vector =matrix.getVector() ;
+    return matrix.getVector().at(column*matrix.getHeignt()+row);
 }
 
 void matrixImg::convolution(Border border, const double array[], int sizeN, int sizeM)//свертка
@@ -288,7 +332,7 @@ void matrixImg::convolution(Border border, const double array[], int sizeN, int 
             for(int i=0;i<sizeN;i++){
                 double summaString=0;
                 for(int j=0;j<sizeM;j++){
-                    summaString+=array[indexMass++]*getElement(border,m+sizeM/2-j,k+sizeN/2-i);
+                    summaString+=array[indexMass++]*getElement(border,k+sizeN/2-i,m+sizeM/2-j);
                 }
                 resultZnath+=summaString;
             }

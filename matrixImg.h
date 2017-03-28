@@ -48,6 +48,7 @@ private:
     static double getElement(Border border,const matrixImg &matrix, int column, int row);
 
     static double getBorder(Border border,const matrixImg &matrix, int column, int row);
+    double getBorder(Border border, int column, int row) const;
 
     vector<double> convertToVector(const QImage &image) const;
     vector<double> getGrayVector(const QPixmap &pix) const;
