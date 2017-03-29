@@ -76,9 +76,11 @@ void MainWindow::lab3(QPixmap pix)
 {
     matrixImg lab3 = matrixImg(pix);
     mySearchPoint pointSearch = mySearchPoint(lab3);
-    matrixImg harris= pointSearch.moravek(Border::Reflect,0.02);
-    pointSearch.adaptiveNonMaximumSuppression(500);
-    pointSearch.saveImgAndPoint();
+    matrixImg harris= pointSearch.harris(Border::Wrapping,0.02);
+    ui->graphicsView->scene()->clear();
+    ui->graphicsView->scene()->addPixmap((QPixmap()).fromImage(pointSearch.saveImgAndPoint()));
+    pointSearch.adaptiveNonMaximumSuppression(1000);
+    //pointSearch.saveImgAndPoint();
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(pointSearch.saveImgAndPoint()));
 }

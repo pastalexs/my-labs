@@ -12,7 +12,7 @@ mySearchPoint::mySearchPoint(matrixImg &img)
 matrixImg mySearchPoint::harris(Border border, double limit)
 {
     matrixImg gauss = GausPiramida::getGauss(myImg,1);
-    const int windows = 5;
+    const int windows = 2;
 
     //Sobel
     double massVert[] ={1,0,-1};
@@ -34,9 +34,9 @@ matrixImg mySearchPoint::harris(Border border, double limit)
             {
                 for(int v=-windows;v<=windows;v++)
                 {
-                    double w = gauss.getElement(border,v+windows,u+windows);
-                    double Ix = sobX.getElement(border,y+v,x+u);
-                    double Iy = sobY.getElement(border,y+v,x+u);
+                    double w = gauss.getElement(border,u+windows,v+windows);
+                    double Ix = sobX.getElement(border,y+u,x+v);
+                    double Iy = sobY.getElement(border,y+u,x+v);
                     A += w * pow(Ix,2);
                     B += w * Ix * Iy;
                     C += w * pow(Iy,2);
@@ -44,6 +44,7 @@ matrixImg mySearchPoint::harris(Border border, double limit)
             }
             double f = A*C - pow(B,2) + k*pow(A+C,2);
             result.push_back(f);
+
         }
     }
     searchPoint(border,matrixImg(result,myImg.getWidth(),myImg.getHeignt()),limit,windows);
@@ -53,7 +54,7 @@ matrixImg mySearchPoint::harris(Border border, double limit)
 matrixImg mySearchPoint::moravek(Border border, double limit)
 {
     vector<double> vectorError;
-    double window = 5;
+    double window = 2;
     vector<double> result;
     for(int y=0;y<myImg.getWidth();y++)
     {
@@ -87,15 +88,15 @@ matrixImg mySearchPoint::moravek(Border border, double limit)
 
 void mySearchPoint::searchPoint(Border border, const matrixImg &img, double limit, int windows)
 {
-    const int window = 2;
+    const int window = windows;//2;
     vectorPoint.clear();
     for(int y=0;y<img.getWidth();y++){
         for(int x=0;x<img.getHeignt();x++){
             double intens = img.getElement(border,y,x);
             if(intens > limit){
                 bool isMaxLoc = true;
-                for(int u=-window;u<window;u++){
-                    for(int v=-window;v<window;v++){
+                for(int u=-window;u<=window && isMaxLoc == true;u++){
+                    for(int v=-window;v<=window;v++){
                         if (u != 0 && v != 0) {
                             double shiftIntens = img.getElement(border,y+u,x+v);
                             if(shiftIntens >= intens){
@@ -136,7 +137,7 @@ void mySearchPoint::adaptiveNonMaximumSuppression(int countPoint)
 {
     int rad=0;
     const int maxRad= distance(0,myImg.getHeignt(),0,myImg.getWidth());
-    const double cof= 0.9;
+    const double cof= 0.04;
     double dist, intensI, intensJ;
     while(vectorPoint.size()>countPoint && rad<=maxRad){
         for(int i=0;i< vectorPoint.size();i++){
