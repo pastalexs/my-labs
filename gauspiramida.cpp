@@ -72,6 +72,6 @@ matrixImg GausPiramida::getGauss(const matrixImg &img,double deltaSigma)
         summa+=result.at(i);
         massCore[i]=result.at(i);
     }
-    int size3=result.size();
+    int size3=(int)result.size();
     return img.twoConvolution(Border::CopyValue,massCore,massCore,size3);
 }

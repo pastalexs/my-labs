@@ -47,14 +47,14 @@ matrixImg mySearchPoint::harris(Border border, double limit)
 
         }
     }
-    searchPoint(border,matrixImg(result,myImg.getWidth(),myImg.getHeignt()),limit,windows);
+    searchPoint(border,matrixImg(result,myImg.getWidth(),myImg.getHeignt()),windows, limit);
     return matrixImg(result,myImg.getWidth(),myImg.getHeignt());
 }
 
 matrixImg mySearchPoint::moravek(Border border, double limit)
 {
     vector<double> vectorError;
-    double window = 2;
+    double window = 3;
     vector<double> result;
     for(int y=0;y<myImg.getWidth();y++)
     {
@@ -82,24 +82,29 @@ matrixImg mySearchPoint::moravek(Border border, double limit)
             result.push_back(minError);
         }
     }
-    searchPoint(border,matrixImg(result,myImg.getWidth(),myImg.getHeignt()),limit,window);
+    searchPoint(border,matrixImg(result,myImg.getWidth(),myImg.getHeignt()),window, limit);
     return matrixImg(result,myImg.getWidth(),myImg.getHeignt());
 }
 
-void mySearchPoint::searchPoint(Border border, const matrixImg &img, double limit, int windows)
+void mySearchPoint::searchPoint(Border border, const matrixImg &img, int windows, double limit)
 {
-    const int window = windows;//2;
+    const int window = 2;//windows;
     vectorPoint.clear();
     for(int y=0;y<img.getWidth();y++){
         for(int x=0;x<img.getHeignt();x++){
             double intens = img.getElement(border,y,x);
             if(intens > limit){
+                 cout<<"intens: "<<intens<<endl;
                 bool isMaxLoc = true;
                 for(int u=-window;u<=window && isMaxLoc == true;u++){
                     for(int v=-window;v<=window;v++){
-                        if (u != 0 && v != 0) {
+                        if (u == 0 && v == 0) {
+                            //if( u!=
+                        }
+                        else{
                             double shiftIntens = img.getElement(border,y+u,x+v);
-                            if(shiftIntens >= intens){
+                            // cout<<"intens: "<<intens<<" shiftIntens: "<<shiftIntens<<endl;
+                            if(shiftIntens > intens){
                                 isMaxLoc = false;
                                 break;
                             }
@@ -121,13 +126,32 @@ double mySearchPoint::distance(int a1, int a2, int b1, int b2)
     return sqrt(pow(a2-a1,2)+pow(b2-b1,2));
 }
 
+vector<double> mySearchPoint::normal(vector<double> &vectorImg,double limit)
+{
+    double min=*min_element(vectorImg.begin(),vectorImg.end()) ;
+    double max=*max_element(vectorImg.begin(),vectorImg.end());
+    double range=max - min;
+    vector<double> result;
+    for(int y=0;y<myImg.getWidth();y++){
+        for(int x=0;x<myImg.getHeignt();x++){
+            double intens = (vectorImg.at(x+y*myImg.getHeignt())-min)/range*100;
+            //cout<<"intens: "<<intens<<endl;
+            if(intens>=limit){
+                result.push_back(intens);
+            }else {
+                result.push_back(0);
+            }
+        }
+    }
+    return result;
+}
 QImage mySearchPoint::saveImgAndPoint()
 {
     QImage img = myImg.getImg();
     QPainter painter(&img);
     painter.setPen(qRgb(255,0,0));
     for(Point point : vectorPoint) {
-        painter.drawEllipse(point.y,point.x, 2,2);
+        painter.drawEllipse(point.y,point.x, 1,1);
     }
     img.save("C:\\AGTU\\img\\point\\point.png","png");
     return img;
@@ -137,15 +161,15 @@ void mySearchPoint::adaptiveNonMaximumSuppression(int countPoint)
 {
     int rad=0;
     const int maxRad= distance(0,myImg.getHeignt(),0,myImg.getWidth());
-    const double cof= 0.04;
+    const double cof= 0.9;
     double dist, intensI, intensJ;
     while(vectorPoint.size()>countPoint && rad<=maxRad){
         for(int i=0;i< vectorPoint.size();i++){
-            intensI = vectorPoint[i].intens;
+            intensI = vectorPoint[i].intens/cof;
             for(int j=i+1; j<vectorPoint.size(); j++)
             {
                 dist= distance(vectorPoint[i].x,vectorPoint[j].x,vectorPoint[i].y,vectorPoint[j].y);
-                intensJ = cof* vectorPoint[j].intens;
+                intensJ = /*cof**/ vectorPoint[j].intens;
                 if(dist<=rad && intensJ > intensI){
                     vectorPoint.erase(vectorPoint.begin()+i);
                     i--;

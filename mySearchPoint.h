@@ -27,8 +27,9 @@ public:
 private:
     vector<Point> vectorPoint;
     matrixImg myImg;
-    void searchPoint(Border border, const matrixImg &img, double limit, int windows);
+    void searchPoint(Border border, const matrixImg &img, int windows, double limit);
     double distance(int a1, int a2, int b1, int b2);
+    vector<double> normal(vector<double> &vectorImg, double limit);
 
 };
 

@@ -60,7 +60,7 @@ void MainWindow::gauss(QPixmap pix){
         summa+=result.at(i);
         massCore[i]=result.at(i);
     }
-    int size3=result.size();
+    int size3=(int)result.size();
     matrixImg gauss = lab1-> twoConvolution(Border::Reflect,massCore,massCore,size3);
     ui->graphicsView_2->scene()->clear();
     ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(gauss.getImg()));
@@ -76,13 +76,18 @@ void MainWindow::lab3(QPixmap pix)
 {
     matrixImg lab3 = matrixImg(pix);
     mySearchPoint pointSearch = mySearchPoint(lab3);
-    matrixImg harris= pointSearch.harris(Border::Wrapping,0.02);
+    matrixImg matr = pointSearch.harris(Border::Wrapping,3.81861e+015);
+    pointSearch.adaptiveNonMaximumSuppression(500);
     ui->graphicsView->scene()->clear();
     ui->graphicsView->scene()->addPixmap((QPixmap()).fromImage(pointSearch.saveImgAndPoint()));
-    pointSearch.adaptiveNonMaximumSuppression(1000);
+    mySearchPoint pointSearchMoravek = mySearchPoint(lab3);
+    pointSearchMoravek.moravek(Border::Wrapping,15000);
+    pointSearchMoravek.adaptiveNonMaximumSuppression(500);
     //pointSearch.saveImgAndPoint();
+   // pointSearch.adaptiveNonMaximumSuppression(500);
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(pointSearch.saveImgAndPoint()));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(pointSearchMoravek.saveImgAndPoint()));
+    pointSearch.saveImgAndPoint();
 }
 
 void MainWindow::lab1(QPixmap pix){
