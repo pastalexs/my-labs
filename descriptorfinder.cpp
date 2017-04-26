@@ -28,12 +28,11 @@ vector<Descriptor> Descriptor::createOrientedDescriptors(const matrixImg &sobelX
 }
 
 double Descriptor::calculateAngle(const int index, const int binsNumber) const {
-    const double left = elements[(index - 1 + binsNumber) % binsNumber];
-    const double center = elements[index];
-    const double right = elements[(index + 1) % binsNumber];
-    const double x = -0.5 * (right - left) / (left - 2.0 * center + right);
-    const double angle = 2.0 * M_PI * (x + 0.5 + index) / binsNumber;
-    return angle;
+    double left = elements[(index - 1 + binsNumber) % binsNumber];
+    double center = elements[index];
+    double right = elements[(index + 1) % binsNumber];
+    double x = -0.5 * (right - left) / (left - 2.0 * center + right);
+    return 2.0 * M_PI * (x + 0.5 + index) / binsNumber;
 }
 
 Descriptor::Descriptor(const matrixImg &sobelX, const matrixImg& sobelY,int pointX, int pointY,int regionsX, int regionsY,int binsInHistogram, double angleShift, bool makeNormalize, double sigma) : pointX(pointX), pointY(pointY){

@@ -11,6 +11,7 @@ using namespace std;
 
 class Descriptor
 {
+private:
     int pointX, pointY;
 
     static const int regionsX = 4, regionsY = 4;
@@ -38,23 +39,11 @@ class Descriptor
     pair<int, int> getNeighborsToPoint(double angle, int binsNumber, const unique_ptr<double[]>& centers) const;
     double calculateAngle(int index, int manyBinsNumber) const;
 public:
-    static vector<Descriptor> createOrientedDescriptors(
-            const matrixImg& sobelX, const matrixImg& sobelY,
-            int pointX, int pointY,
-            double sigma
-            );
-    Descriptor(const matrixImg& sobelX, const matrixImg &sobelY,
-               int pointX, int pointY,
-               int regionsX, int regionsY,
-               int binsInHistogram, double angleShift,
-               bool normalize,
-               double sigma
-               );
+    static vector<Descriptor> createOrientedDescriptors(const matrixImg& sobelX, const matrixImg& sobelY, int pointX, int pointY,double sigma);
+    Descriptor(const matrixImg& sobelX, const matrixImg &sobelY,int pointX, int pointY,int regionsX, int regionsY,int binsInHistogram, double angleShift,bool normalize,double sigma);
     Descriptor(const Descriptor& sample);
     Descriptor& operator=(const Descriptor& sample);
 
-    int getPointX() const {return pointX;}
-    int getPointY() const {return pointY;}
     double getElement(int i) const{
         return elements[i];
     }
