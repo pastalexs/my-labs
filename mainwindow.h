@@ -7,6 +7,7 @@
 #include "gauspiramida.h"
 #include "matrixImg.h"
 #include "mySearchPoint.h"
+#include "descriptorfinder.h"
 
 namespace Ui {
 class MainWindow;
@@ -33,6 +34,7 @@ private:
 
     void lab2(QPixmap pix);
     void lab3(QPixmap pix);
+    void lab4(QPixmap pix);
 };
 
 #endif // MAINWINDOW_H
