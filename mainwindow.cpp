@@ -4,7 +4,8 @@
 #include <QFileDialog>
 #include "matrixImg.cpp"
 #include "mySearchPoint.cpp"
-#include "descriptorfinder.cpp"
+#include "mydescriptor.cpp"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -14,7 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QGraphicsScene *scene = new QGraphicsScene();
     QGraphicsScene *scene2 = new QGraphicsScene();
     QPixmap pix;
-    pix.load("imgL90.png");
+    pix.load("imgL.png");
     scene->addPixmap(pix);
     ui->graphicsView->setScene(scene);
     ui->graphicsView_2->setScene(scene2);
@@ -101,6 +102,17 @@ void MainWindow::lab4(QPixmap pix)
     QImage qImage1 = pix.toImage();
     vector<Point> firstVector = pointSearch.getVector();
 
+
+    double massVert[] ={1,0,-1};
+    double massGoris[] = {1,2,1};
+
+    int size3=3;
+
+    matrixImg sobelX = lab.twoConvolution(Border::Black,massVert,massGoris,size3);
+    matrixImg sobelY = lab.twoConvolution(Border::Black,massGoris,massVert,size3);
+    myDescriptor decript1= myDescriptor(sobelX,sobelY,Border::Black,4,4,4,8);
+    decript1.calculationDescriptor(firstVector);
+
     QPixmap pix2;
     pix2.load("imgL.png");
     matrixImg lab2 = matrixImg(pix2);
@@ -109,6 +121,13 @@ void MainWindow::lab4(QPixmap pix)
     pointSearch2.adaptiveNonMaximumSuppression(100);
 
     vector<Point> secondVector = pointSearch2.getVector();
+
+
+    matrixImg sobelX2 = lab2.twoConvolution(Border::Black,massVert,massGoris,size3);
+    matrixImg sobelY2 = lab2.twoConvolution(Border::Black,massGoris,massVert,size3);
+    myDescriptor decript2= myDescriptor(sobelX2,sobelY2,Border::Black,4,4,4,8);
+    decript2.calculationDescriptor(secondVector);
+
 
     QImage qImage2 = pix2.toImage();
     QImage result = QImage(qImage1.width() + qImage2.width(),max(qImage1.height(), qImage2.height()),QImage::Format_RGB32);
@@ -129,42 +148,43 @@ void MainWindow::lab4(QPixmap pix)
     painter.setPen(pen);
     int color = 0;
     const double T = 0.8;
-    QColor red = QColor(255, 0, 0),
+    QColor black = QColor(0, 0, 0),
             green = QColor(0, 255, 0),
-            blue = QColor(0, 0, 255),
-            black = QColor(0, 0, 0);
+            red = QColor(255, 0, 0),
+            blue = QColor(0, 0, 255);
     for (int i = 0; i < firstVector.size(); i++) {
-        double minDistance = numeric_limits<double>::max(), secondMinDistance = minDistance;
+        double minDist = numeric_limits<double>::max();
+        double secMinDist = minDist;
         int indexMin = -1;
         for (int j = 0; j < secondVector.size(); j++) {
-            double distance = pointSearch2.distance(firstVector.at(i).x,secondVector.at(j).x,firstVector.at(i).y,secondVector.at(j).y);
-            if (minDistance > distance) {
-                secondMinDistance = minDistance;
-                minDistance = distance;
+            double distance = myDescriptor::distance(decript1,decript2,i,j);//pointSearch2.distance(firstVector.at(i).x,secondVector.at(j).x,firstVector.at(i).y,secondVector.at(j).y);
+            if (minDist > distance) {
+                secMinDist = minDist;
+                minDist = distance;
                 indexMin = j;
                 continue;
             }
-            if (secondMinDistance > distance) {
-                secondMinDistance = distance;
+            if (secMinDist > distance) {
+                secMinDist = distance;
             }
         }
-        const double rate = minDistance / secondMinDistance;
+        const double rate = minDist / secMinDist;
         if (rate <= T) {
             switch (color) {
             case 0:
-                pen.setColor(red);
+                pen.setColor(black);
                 color++;
                 break;
             case 1:
-                pen.setColor(blue);
-                color++;
-                break;
-            case 2:
                 pen.setColor(green);
                 color++;
                 break;
+            case 2:
+                pen.setColor(blue);
+                color++;
+                break;
             case 3:
-                pen.setColor(black);
+                pen.setColor(red);
                 color = 0;
                 break;
             }

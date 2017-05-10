@@ -28,12 +28,12 @@ SOURCES += main.cpp\
     gauspiramida.cpp \
     matrixImg.cpp \
     mySearchPoint.cpp \
-    descriptorfinder.cpp
+    mydescriptor.cpp
 
 HEADERS  += mainwindow.h \
     gauspiramida.h \
     matrixImg.h \
     mySearchPoint.h \
-    descriptorfinder.h
+    mydescriptor.h
 
 FORMS    += mainwindow.ui

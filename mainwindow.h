@@ -7,7 +7,7 @@
 #include "gauspiramida.h"
 #include "matrixImg.h"
 #include "mySearchPoint.h"
-#include "descriptorfinder.h"
+
 
 namespace Ui {
 class MainWindow;
