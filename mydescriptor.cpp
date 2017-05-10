@@ -14,7 +14,6 @@ myDescriptor::myDescriptor(matrixImg &x, matrixImg &y, Border border, int rSizeX
 vector<discript> myDescriptor::calculationDescriptor(const vector<Point> &points)
 {
     vector<discript> result;
-    //const int descriptorSize = rSizeX * rSizeY * partsCount;
     vector<double> content;
     const int size = rSizeX * histogramSize;
     foreach (Point point, points) {
@@ -39,8 +38,8 @@ vector<discript> myDescriptor::calculationDescriptor(const vector<Point> &points
 
 double myDescriptor::distance(myDescriptor &descr1, myDescriptor &descr2, int i, int j)
 {
-     auto vector1= descr1.getVectorDiscriptor();
-     auto vector2= descr2.getVectorDiscriptor();
+    auto vector1= descr1.getVectorDiscriptor();
+    auto vector2= descr2.getVectorDiscriptor();
     double distance=0;
     for(int n=0;n<vector1.size();n++){
         double dist = vector1.at(i).vectorDescript.at(n) - vector2.at(j).vectorDescript.at(n);
