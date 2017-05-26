@@ -11,8 +11,8 @@ mySearchPoint::mySearchPoint(matrixImg &img)
 
 matrixImg mySearchPoint::harris(Border border, double limit)
 {
-    matrixImg gauss = GausPiramida::getGauss(myImg,1);
-    const int windows = 2;
+    matrixImg gauss = GausPiramida::getGauss(myImg,2);
+    const int windows = 3;
 
     //Sobel
     double massVert[] ={1,0,-1};
@@ -42,8 +42,11 @@ matrixImg mySearchPoint::harris(Border border, double limit)
                     C += w * pow(Iy,2);
                 }
             }
-            double f = A*C - pow(B,2) + k*pow(A+C,2);
-            result.push_back(f);
+            //double f = A*C - pow(B,2) + k*pow(A+C,2);
+            double D = sqrt((A-C)*(A-C) + 4*B*B);
+            double L1 = abs((A+C+D)/2);
+            double L2 = abs((A+C-D)/2);
+            result.push_back(min(L1,L2));
 
         }
     }

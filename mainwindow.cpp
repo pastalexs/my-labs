@@ -23,7 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // this->lab1(pix);
     //this->gauss(pix);
     //this->lab2(pix);
-    // this->lab3(pix);
+     //this->lab3(pix);
     this->lab4(pix);
     myImg=pix;
 }
@@ -78,17 +78,17 @@ void MainWindow::lab3(QPixmap pix)
 {
     matrixImg lab3 = matrixImg(pix);
     mySearchPoint pointSearch = mySearchPoint(lab3);
-    matrixImg matr = pointSearch.harris(Border::Wrapping,3.81861e+015);
+    matrixImg matr = pointSearch.harris(Border::Wrapping,/*3.81861e+015*/2.90925e+007);
     pointSearch.adaptiveNonMaximumSuppression(500);
     ui->graphicsView->scene()->clear();
     ui->graphicsView->scene()->addPixmap((QPixmap()).fromImage(pointSearch.saveImgAndPoint()));
-    mySearchPoint pointSearchMoravek = mySearchPoint(lab3);
+   /* mySearchPoint pointSearchMoravek = mySearchPoint(lab3);
     pointSearchMoravek.moravek(Border::Wrapping,15000);
     pointSearchMoravek.adaptiveNonMaximumSuppression(500);
     //pointSearch.saveImgAndPoint();
     // pointSearch.adaptiveNonMaximumSuppression(500);
     ui->graphicsView_2->scene()->clear();
-    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(pointSearchMoravek.saveImgAndPoint()));
+    ui->graphicsView_2->scene()->addPixmap((QPixmap()).fromImage(pointSearchMoravek.saveImgAndPoint()));*/
     pointSearch.saveImgAndPoint();
 }
 
@@ -96,8 +96,8 @@ void MainWindow::lab4(QPixmap pix)
 {
     matrixImg lab = matrixImg(pix);
     mySearchPoint pointSearch = mySearchPoint(lab);
-    pointSearch.harris(Border::Wrapping,3.81861e+015);
-    pointSearch.adaptiveNonMaximumSuppression(100);
+    pointSearch.harris(Border::Wrapping,2.90925e+007);
+    pointSearch.adaptiveNonMaximumSuppression(500);
 
     QImage qImage1 = pix.toImage();
     vector<Point> firstVector = pointSearch.getVector();
@@ -110,23 +110,25 @@ void MainWindow::lab4(QPixmap pix)
 
     matrixImg sobelX = lab.twoConvolution(Border::Black,massVert,massGoris,size3);
     matrixImg sobelY = lab.twoConvolution(Border::Black,massGoris,massVert,size3);
-    myDescriptor decript1= myDescriptor(sobelX,sobelY,Border::Black,4,4,4,8);
-    decript1.calculationDescriptor(firstVector);
+    matrixImg gauss = GausPiramida::getGauss(lab,2);
+    myDescriptor decript1= myDescriptor(gauss,sobelX,sobelY,Border::Black,1,1,16,36);
+    decript1.calculationDescriptor(firstVector,0);
 
     QPixmap pix2;
-    pix2.load("imgL.png");
+    pix2.load("imgL90.png");
     matrixImg lab2 = matrixImg(pix2);
     mySearchPoint pointSearch2 = mySearchPoint(lab2);
-    pointSearch2.harris(Border::Wrapping,3.81861e+015);
-    pointSearch2.adaptiveNonMaximumSuppression(100);
+    pointSearch2.harris(Border::Wrapping,2.90925e+007);
+    pointSearch2.adaptiveNonMaximumSuppression(500);
 
     vector<Point> secondVector = pointSearch2.getVector();
 
 
     matrixImg sobelX2 = lab2.twoConvolution(Border::Black,massVert,massGoris,size3);
     matrixImg sobelY2 = lab2.twoConvolution(Border::Black,massGoris,massVert,size3);
-    myDescriptor decript2= myDescriptor(sobelX2,sobelY2,Border::Black,4,4,4,8);
-    decript2.calculationDescriptor(secondVector);
+    matrixImg gauss2 = GausPiramida::getGauss(lab2,2);
+    myDescriptor decript2= myDescriptor(gauss2,sobelX2,sobelY2,Border::Black,1,1,16,36);
+    decript2.calculationDescriptor(secondVector,0);
 
 
     QImage qImage2 = pix2.toImage();
@@ -147,17 +149,44 @@ void MainWindow::lab4(QPixmap pix)
     pen.setWidth(1);
     painter.setPen(pen);
     int color = 0;
-    const double T = 0.8;
     QColor black = QColor(0, 0, 0),
             green = QColor(0, 255, 0),
             red = QColor(255, 0, 0),
             blue = QColor(0, 0, 255);
-    for (int i = 0; i < firstVector.size(); i++) {
+    double best=1;
+    vector<ProximateDescriptors> overlap =decript1.findOverlap(decript1,decript2,best);
+    for(int i=0;i<overlap.size();i++){
+        switch (color) {
+        case 0:
+            pen.setColor(black);
+            color++;
+            break;
+        case 1:
+            pen.setColor(green);
+            color++;
+            break;
+        case 2:
+            pen.setColor(blue);
+            color++;
+            break;
+        case 3:
+            pen.setColor(red);
+            color = 0;
+            break;
+        }
+        painter.setPen(qRgb(0,255,0));
+        //painter.drawEllipse(overlap.at(i).fY, overlap.at(i).fX, 10,10);
+        //painter.drawEllipse(overlap.at(i).sY + pix.width(), overlap.at(i).sX, 10,10);
+
+        painter.setPen(pen);
+        painter.drawLine(overlap.at(i).fY, overlap.at(i).fX, overlap.at(i).sY + pix.width(), overlap.at(i).sX);
+    }
+   /* for (int i = 0; i < firstVector.size(); i++) {
         double minDist = numeric_limits<double>::max();
         double secMinDist = minDist;
         int indexMin = -1;
         for (int j = 0; j < secondVector.size(); j++) {
-            double distance = myDescriptor::distance(decript1,decript2,i,j);//pointSearch2.distance(firstVector.at(i).x,secondVector.at(j).x,firstVector.at(i).y,secondVector.at(j).y);
+            double distance = myDescriptor::distance(decript1,decript2,i,j);
             if (minDist > distance) {
                 secMinDist = minDist;
                 minDist = distance;
@@ -194,8 +223,8 @@ void MainWindow::lab4(QPixmap pix)
                     x2 = secondVector.at(indexMin).x + qImage1.width(),
                     y2 = secondVector.at(indexMin).y;
             painter.drawLine(x1, y1, x2, y2);
-        }
-    }
+        }*/
+   // }
     QDir outputDir ("C:/AGTU/img/dist");
     result.save(outputDir.absoluteFilePath("img.jpg"), "jpg");
     ui->graphicsView_2->scene()->clear();
